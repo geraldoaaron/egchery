@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -33,42 +33,39 @@ export default function InfoPromoPage() {
   ];
 
   return (
-    <div className="pt-32 pb-24 min-h-screen bg-background">
+    <div className="pt-32 pb-24 min-h-screen bg-background text-black text-center">
       <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        <div 
           className="mb-16"
         >
-          <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-4 text-black">
-            Info & <span className="text-primary">Promo</span>
+          <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-4 text-black text-center">
+            Info & <span className="text-primary text-center">Promo</span>
           </h1>
-          <p className="text-gray-600 text-lg max-w-2xl">
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto text-center">
             Berita terbaru, kegiatan seru, dan promo penawaran terbatas dari Chery Wonder Indonesia.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {promos.map((promo, index) => (
-            <motion.div
+            <div
               key={promo.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
               className="bg-black/5 border border-black/10 rounded-2xl overflow-hidden group flex flex-col"
             >
               <div className="aspect-[4/3] relative overflow-hidden">
-                <img 
+                <Image 
+                  fill
                   src={promo.image} 
                   alt={promo.title} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
-                <div className="absolute top-4 left-4 bg-primary text-black text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+                <div className="absolute top-4 left-4 bg-primary text-black text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest z-10">
                   {promo.type}
                 </div>
               </div>
               
-              <div className="p-6 flex flex-col flex-1">
+              <div className="p-6 flex flex-col flex-1 text-left">
                 <span className="text-sm text-gray-500 font-medium mb-2 block">{promo.date}</span>
                 <h3 className="text-xl font-bold text-black mb-3 line-clamp-2">{promo.title}</h3>
                 <p className="text-gray-600 text-sm mb-6 line-clamp-3">{promo.description}</p>
@@ -78,7 +75,7 @@ export default function InfoPromoPage() {
                   </Link>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cars } from "@/data/cars";
 import Link from "next/link";
@@ -13,18 +14,14 @@ export default function ModelMobilPage() {
   return (
     <div className="pt-32 pb-24 min-h-screen bg-background">
       <div className="container mx-auto px-4 md:px-8">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-6 text-black text-center">
             Model <span className="text-primary text-center">Chery</span>
           </h1>
           <p className="text-gray-600 max-w-2xl mx-auto text-lg text-center">
             Jelajahi inovasi terkini dan kemewahan dalam setiap koleksi mobil Chery kami.
           </p>
-        </motion.div>
+        </div>
 
         {/* Filter Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-16">
@@ -44,7 +41,7 @@ export default function ModelMobilPage() {
         </div>
 
         {/* Grid */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence>
             {filteredCars.map(car => (
               <motion.div
@@ -57,10 +54,12 @@ export default function ModelMobilPage() {
               >
                 <Link href={`/model-mobil/${car.id}`} className="group block relative rounded-2xl overflow-hidden bg-white border border-black/10 shadow-sm aspect-[4/3] hover:shadow-xl transition-all duration-500">
                   <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/40 to-transparent z-10" />
-                  <img 
+                  <Image 
+                    fill
                     src={car.image} 
                     alt={car.name} 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out mix-blend-multiply"
+                    className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out mix-blend-multiply"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <div className="absolute bottom-0 left-0 w-full p-8 z-20">
                     <span className="text-primary text-sm font-bold tracking-widest uppercase mb-2 block transform group-hover:-translate-y-2 transition-transform duration-300">{car.category}</span>
@@ -73,7 +72,7 @@ export default function ModelMobilPage() {
               </motion.div>
             ))}
           </AnimatePresence>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

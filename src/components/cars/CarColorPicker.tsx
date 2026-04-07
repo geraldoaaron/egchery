@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check } from "lucide-react";
@@ -16,7 +17,13 @@ export function CarColorPicker({ colors, defaultImage }: { colors: ColorChoice[]
   if (!colors || colors.length === 0) {
     return (
       <div className="w-full aspect-[16/9] rounded-2xl overflow-hidden bg-black/5 relative">
-        <img src={defaultImage} alt="Car View" className="w-full h-full object-cover" />
+        <Image 
+          fill 
+          src={defaultImage} 
+          alt="Car View" 
+          className="object-cover" 
+          sizes="(max-width: 768px) 100vw, 80vw"
+        />
       </div>
     );
   }
@@ -28,16 +35,23 @@ export function CarColorPicker({ colors, defaultImage }: { colors: ColorChoice[]
       {/* Visualizer Frame */}
       <div className="w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden bg-gradient-to-b from-black/5 to-transparent relative border border-black/10 group">
         <AnimatePresence mode="wait">
-          <motion.img
+          <motion.div
             key={currentImage}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.05 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            src={currentImage}
-            alt={activeColor?.name || "Car"}
-            className="w-full h-full object-cover"
-          />
+            className="absolute inset-0"
+          >
+            <Image
+              fill
+              src={currentImage}
+              alt={activeColor?.name || "Car"}
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 80vw"
+              priority
+            />
+          </motion.div>
         </AnimatePresence>
         
         {/* Shine overlay */}
@@ -58,7 +72,7 @@ export function CarColorPicker({ colors, defaultImage }: { colors: ColorChoice[]
             <button
               key={c.name}
               onClick={() => setActiveColor(c)}
-              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all outline-none \${
+              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all outline-none ${
                 activeColor?.name === c.name 
                   ? "ring-2 ring-primary ring-offset-4 ring-offset-[#050505] scale-110" 
                   : "hover:scale-105"

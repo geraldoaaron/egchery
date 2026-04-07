@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
@@ -21,14 +22,15 @@ export function HeroSection() {
       ref={containerRef}
       className="relative min-h-[100svh] w-full overflow-hidden flex items-center justify-center bg-white"
     >
-      {/* Background Video/Image Parallax */}
+      {/* Background Image Parallax */}
       <motion.div style={{ y, opacity }} className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white z-10" />
-        {/* We use a high quality fallback image here representing luxury automotive */}
-        <img
+        <Image
           src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=2670&auto=format&fit=crop"
           alt="Chery Luxury"
-          className="w-full h-full object-cover scale-105 opacity-60"
+          fill
+          priority
+          className="object-cover scale-105 opacity-60"
         />
       </motion.div>
 

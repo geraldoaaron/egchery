@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Image from "next/image";
 import { useHasMounted } from "@/hooks/useHasMounted";
 
 const images = [
@@ -49,12 +50,20 @@ export function DeliverySection() {
           {/* Parallax Image Grid */}
           <div className="relative h-[600px] flex gap-4 rotate-[-5deg] scale-110">
             <motion.div style={{ y: y1 }} className="w-1/2 flex flex-col gap-4">
-              <img src={images[0]} alt="Delivery 1" className="w-full h-[400px] object-cover rounded-2xl" />
-              <img src={images[1]} alt="Delivery 2" className="w-full h-[300px] object-cover rounded-2xl" />
+              <div className="relative h-[400px] w-full overflow-hidden rounded-2xl">
+                <Image fill src={images[0]} alt="Delivery 1" className="object-cover" sizes="(max-width: 768px) 50vw, 33vw" />
+              </div>
+              <div className="relative h-[300px] w-full overflow-hidden rounded-2xl">
+                <Image fill src={images[1]} alt="Delivery 2" className="object-cover" sizes="(max-width: 768px) 50vw, 33vw" />
+              </div>
             </motion.div>
             <motion.div style={{ y: y2 }} className="w-1/2 flex flex-col gap-4">
-              <img src={images[2]} alt="Delivery 3" className="w-full h-[300px] object-cover rounded-2xl" />
-              <img src={images[3]} alt="Delivery 4" className="w-full h-[400px] object-cover rounded-2xl" />
+              <div className="relative h-[300px] w-full overflow-hidden rounded-2xl">
+                <Image fill src={images[2]} alt="Delivery 3" className="object-cover" sizes="(max-width: 768px) 50vw, 33vw" />
+              </div>
+              <div className="relative h-[400px] w-full overflow-hidden rounded-2xl">
+                <Image fill src={images[3]} alt="Delivery 4" className="object-cover" sizes="(max-width: 768px) 50vw, 33vw" />
+              </div>
             </motion.div>
           </div>
 

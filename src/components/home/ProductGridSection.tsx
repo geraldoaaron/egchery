@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useScroll, useTransform } from "framer-motion";
 import { cars } from "@/data/cars";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -41,10 +42,12 @@ export function ProductGridSection() {
             >
               <Link href={`/model-mobil/${car.id}`} className="group block relative rounded-2xl overflow-hidden bg-white border border-black/10 aspect-[4/3] shadow-sm hover:shadow-xl transition-shadow duration-500">
                 <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/20 to-transparent z-10" />
-                <img 
+                <Image 
+                  fill
                   src={car.image} 
                   alt={car.name} 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out mix-blend-multiply"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out mix-blend-multiply"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
                 <div className="absolute bottom-0 left-0 w-full p-8 z-20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                   <span className="text-primary text-sm font-bold tracking-widest uppercase mb-2 block">{car.category}</span>
