@@ -7,12 +7,12 @@ import { cars } from "@/data/cars";
 import Link from "next/link";
 
 export default function ModelMobilPage() {
-  const [filter, setFilter] = useState<"All" | "Tiggo" | "Omoda" | "J6">("All");
+  const [filter, setFilter] = useState<"All" | "BEV" | "CSH" | "ICE">("All");
 
-  const filteredCars = filter === "All" ? cars : cars.filter(c => c.category === filter);
+  const filteredCars = filter === "All" ? cars : cars.filter(c => c.powertrain === filter);
 
   return (
-    <div className="pt-32 pb-24 min-h-screen bg-background">
+    <div data-nav-theme="light" className="pt-32 pb-24 min-h-screen bg-background">
       <div className="container mx-auto px-4 md:px-8">
         <div className="text-center mb-16">
           <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-6 text-black text-center">
@@ -25,7 +25,7 @@ export default function ModelMobilPage() {
 
         {/* Filter Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-16">
-          {["All", "Tiggo", "Omoda", "J6"].map(tab => (
+          {["All", "BEV", "CSH", "ICE"].map(tab => (
             <button
               key={tab}
               onClick={() => setFilter(tab as any)}
@@ -35,7 +35,7 @@ export default function ModelMobilPage() {
                   : "bg-black/5 text-gray-600 hover:bg-black/10 hover:text-black"
               }`}
             >
-              {tab === "All" ? "Semua Model" : `${tab} Series`}
+              {tab === "All" ? "Semua Model" : tab === "CSH" ? "CSH (PHEV)" : tab}
             </button>
           ))}
         </div>
@@ -62,7 +62,7 @@ export default function ModelMobilPage() {
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <div className="absolute bottom-0 left-0 w-full p-8 z-20">
-                    <span className="text-primary text-sm font-bold tracking-widest uppercase mb-2 block transform group-hover:-translate-y-2 transition-transform duration-300">{car.category}</span>
+                    <span className="text-primary text-sm font-bold tracking-widest uppercase mb-2 block transform group-hover:-translate-y-2 transition-transform duration-300">{car.powertrain}</span>
                     <h3 className="text-3xl font-bold text-black transform group-hover:-translate-y-2 transition-transform duration-300 delay-75">{car.name}</h3>
                     <p className="text-gray-600 text-sm mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute bottom-8">
                       Lihat Detail &rarr;

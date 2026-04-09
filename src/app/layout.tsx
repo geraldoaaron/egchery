@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import GoogleAnalytics from "@/components/globals/GoogleAnalytics";
-import SmoothScroll from "@/components/globals/SmoothScroll";
-import { Navbar } from "@/components/globals/Navbar";
-import { Footer } from "@/components/globals/Footer";
-import { WhatsAppButton } from "@/components/globals/WhatsAppButton";
-import { CookieConsent } from "@/components/globals/CookieConsent";
+import { ClientLayout } from "@/components/globals/ClientLayout";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -28,18 +24,10 @@ export default function RootLayout({
       lang="id"
       className={`${outfit.variable} antialiased`}
     >
-      <body className="flex flex-col bg-background text-foreground overflow-x-hidden">
+      <ClientLayout>
         <GoogleAnalytics ga_id="AW-YOUR_CONVERSION_ID" />
-        <Navbar />
-        <SmoothScroll>
-          <main className="flex-1 flex flex-col min-h-screen">
-            {children}
-          </main>
-          <Footer />
-        </SmoothScroll>
-        <WhatsAppButton />
-        <CookieConsent />
-      </body>
+        {children}
+      </ClientLayout>
     </html>
   );
 }

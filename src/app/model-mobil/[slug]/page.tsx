@@ -30,7 +30,7 @@ export default async function ModelDetailPage(props: { params: Promise<{ slug: s
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div data-nav-theme="light" className="min-h-screen bg-background">
       {/* Dynamic Hero with Color Picker */}
       <section className="pt-32 pb-16 w-full">
         <div className="container mx-auto px-4 md:px-8">
@@ -42,7 +42,7 @@ export default async function ModelDetailPage(props: { params: Promise<{ slug: s
             {/* Title & Actions */}
             <div className="lg:w-1/3">
               <span className="text-primary font-bold tracking-[0.2em] uppercase mb-4 block animate-fade-in-up">
-                {car.category} Series
+                {car.powertrain}
               </span>
               <h1 className="text-5xl md:text-7xl font-bold text-black uppercase tracking-tighter mb-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                 {car.name}

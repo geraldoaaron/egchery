@@ -33,7 +33,7 @@ export default function InfoPromoPage() {
   ];
 
   return (
-    <div className="pt-32 pb-24 min-h-screen bg-background text-black text-center">
+    <div data-nav-theme="light" className="pt-32 pb-24 min-h-screen bg-background text-black text-center">
       <div className="container mx-auto px-4 md:px-8 max-w-6xl">
         <div 
           className="mb-16"

@@ -34,7 +34,7 @@ Pesan: ${formData.message}`;
   };
 
   return (
-    <div className="pt-32 pb-24 min-h-screen bg-background">
+    <div data-nav-theme="light" className="pt-32 pb-24 min-h-screen bg-background">
       <div className="container mx-auto px-4 md:px-8 max-w-6xl">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

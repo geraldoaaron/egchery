@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,107 +13,182 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isModelsDropdownOpen, setIsModelsDropdownOpen] = useState(false);
+  const pathname = usePathname();
+  const [navbarTheme, setNavbarTheme] = useState<"dark" | "light">("dark");
 
-  const [isMobileModelsOpen, setIsMobileModelsOpen] = useState(false);
+  const [selectedPowertrain, setSelectedPowertrain] = useState<"BEV" | "CSH" | "ICE">("CSH");
 
+  // Update theme based on pathname and scroll
   useEffect(() => {
+    // Set initial theme based on path
+    setNavbarTheme(pathname === "/" ? "dark" : "light");
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
-  const tiggoCars = cars.filter((c) => c.category === "Tiggo");
-  const omodaCars = cars.filter((c) => c.category === "Omoda");
+    // Observer to detect background theme of sections
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const theme = entry.target.getAttribute("data-nav-theme") as "dark" | "light";
+            if (theme) setNavbarTheme(theme);
+          }
+        });
+      },
+      { 
+        // Focus on the top part of the viewport
+        rootMargin: "0px 0px -90% 0px",
+        threshold: 0 
+      }
+    );
+
+    // Give a small delay to ensure DOM is ready for observation
+    const timer = setTimeout(() => {
+      document.querySelectorAll("[data-nav-theme]").forEach((el) => observer.observe(el));
+    }, 100);
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
+      clearTimeout(timer);
+    };
+  }, [pathname]);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [isMobileMenuOpen]);
+
+  // Handle models dropdown body scroll
+  useEffect(() => {
+    if (isModelsDropdownOpen) {
+      document.body.style.overflow = "hidden";
+    } else if (!isMobileMenuOpen) {
+      document.body.style.overflow = "";
+    }
+  }, [isModelsDropdownOpen, isMobileMenuOpen]);
+
+  const isLightMode = isScrolled || isModelsDropdownOpen || isMobileMenuOpen || navbarTheme === "light";
+  const filteredCars = cars.filter((c) => c.powertrain === selectedPowertrain);
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/95 backdrop-blur-md border-b border-black/10 py-3 shadow-sm"
-          : "bg-transparent py-5"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-500 border-b ${isMobileMenuOpen
+        ? "bottom-0 bg-background border-foreground/5 py-6"
+        : isLightMode
+          ? `glass-nav border-foreground/[0.03] py-2 md:py-3 lg:py-4`
+          : "bg-transparent border-transparent py-3 md:py-4 lg:py-6"
+        }`}
     >
       <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
-        {/* LOGO */}
-        <Link href="/" className="flex items-center gap-2 z-[1020] relative">
-          <span className="text-2xl font-bold tracking-tighter uppercase text-black">
-            Chery <span className="text-primary">Wonder</span>
-          </span>
+        {/* LOGO (Luxury Clean Style) */}
+        <Link href="/" className="flex items-center z-[1020] relative">
+          <div className="relative w-64 md:w-96 h-8 md:h-10">
+            <Image
+              src={isLightMode ? "/images/logo/cherylogohitam.png" : "/images/logo/cherylogoputih.png"}
+              alt="Chery Wonder Logo"
+              fill
+              className="object-contain object-left"
+              priority
+            />
+          </div>
         </Link>
 
         {/* DESKTOP NAV */}
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-10">
           <Link
             href="/"
-            className="text-sm font-medium text-black hover:text-primary transition-colors"
+            className={`text-[10px] font-bold tracking-[0.2em] uppercase transition-colors ${isLightMode ? "text-foreground/60 hover:text-primary" : "text-white/90 hover:text-white"}`}
           >
             Home
           </Link>
 
-          {/* MODELS DROPDOWN */}
+          {/* MODELS MEGA MENU */}
           <div
             className="relative"
             onMouseEnter={() => setIsModelsDropdownOpen(true)}
             onMouseLeave={() => setIsModelsDropdownOpen(false)}
           >
-            <button className="flex items-center gap-1 text-sm font-medium text-black hover:text-primary transition-colors py-2">
-              Model Mobil <ChevronDown className="w-4 h-4" />
+            <button className={`flex items-center gap-1 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors py-4 ${isModelsDropdownOpen ? "text-primary" : (isLightMode ? "text-foreground/60 hover:text-primary" : "text-white/90 hover:text-white")}`}>
+              Fleet <ChevronDown className={`w-3 h-3 transition-transform duration-500 ${isModelsDropdownOpen ? "rotate-180" : ""}`} />
             </button>
 
             <AnimatePresence>
               {isModelsDropdownOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full left-1/2 -translate-x-1/2 w-[800px] bg-white border border-black/10 shadow-2xl rounded-xl p-6 grid grid-cols-2 gap-8"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="fixed top-[82px] left-0 right-0 w-full bg-background text-foreground overflow-hidden shadow-2xl border-t border-foreground/[0.03]"
                 >
-                  {/* Tiggo Column */}
-                  <div>
-                    <h3 className="text-lg font-bold text-primary mb-4 border-b border-black/10 pb-2">
-                      Tiggo Series
-                    </h3>
-                    <div className="grid grid-cols-2 gap-3">
-                      {tiggoCars.slice(0, 8).map((car) => (
-                        <Link
-                          key={car.id}
-                          href={`/model-mobil/${car.id}`}
-                          className="text-sm text-gray-700 hover:text-primary transition-colors"
-                        >
-                          {car.name}
-                        </Link>
-                      ))}
+                  <div className="container mx-auto px-8 py-16 flex flex-col relative z-10">
+                    <div className="flex items-center justify-center mb-16">
+                      <div className="flex items-center gap-16 border-b border-foreground/[0.05] pb-4">
+                        {(["BEV", "CSH", "ICE"] as const).map((type) => (
+                          <button
+                            key={type}
+                            onMouseEnter={() => setSelectedPowertrain(type)}
+                            className="relative group px-4 py-2"
+                          >
+                            <span className={`text-[10px] font-bold tracking-[0.3em] uppercase transition-colors ${selectedPowertrain === type ? "text-primary" : "text-foreground/30 group-hover:text-foreground"}`}>
+                              {type}
+                            </span>
+                            {selectedPowertrain === type && (
+                              <motion.div
+                                layoutId="navCategoryUnderline"
+                                className="absolute bottom-0 left-0 right-0 h-[1px] bg-primary"
+                              />
+                            )}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  {/* Omoda Column */}
-                  <div>
-                    <h3 className="text-lg font-bold text-primary mb-4 border-b border-black/10 pb-2">
-                      Omoda & J6
-                    </h3>
-                    <div className="grid grid-cols-1 gap-3">
-                      {omodaCars.map((car) => (
-                        <Link
-                          key={car.id}
-                          href={`/model-mobil/${car.id}`}
-                          className="text-sm text-gray-700 hover:text-primary transition-colors"
-                        >
-                          {car.name}
-                        </Link>
-                      ))}
-                      <Link
-                        href="/model-mobil/j6"
-                        className="text-sm hover:text-primary transition-colors mt-2 text-black font-semibold"
+
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={selectedPowertrain}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="flex flex-wrap justify-center gap-x-16 gap-y-12"
                       >
-                        Chery J6
-                      </Link>
-                    </div>
-                    <div className="mt-8">
-                      <Button asChild variant="outline" className="w-full">
-                        <Link href="/model-mobil">Lihat Semua Model</Link>
-                      </Button>
-                    </div>
+                        {filteredCars.map((car) => (
+                          <Link
+                            key={car.id}
+                            href={`/model-mobil/${car.id}`}
+                            onClick={() => setIsModelsDropdownOpen(false)}
+                            className="flex flex-col items-center w-[220px] group"
+                          >
+                            <div className="relative w-full aspect-[16/10] mb-6 grayscale group-hover:grayscale-0 transition-all duration-700">
+                              <Image
+                                src={car.image}
+                                alt={car.name}
+                                fill
+                                sizes="220px"
+                                className="object-contain"
+                              />
+                            </div>
+                            <h3 className="text-[10px] font-bold tracking-widest text-foreground/60 group-hover:text-primary transition-colors uppercase">
+                              {car.name}
+                            </h3>
+                            <div className="w-0 group-hover:w-full h-[1px] bg-primary transition-all duration-500 mt-2" />
+                          </Link>
+                        ))}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Background Decoration */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-[0.01] pointer-events-none select-none z-0">
+                    <span className="text-[20vw] font-black uppercase tracking-tighter text-foreground">{selectedPowertrain}</span>
                   </div>
                 </motion.div>
               )}
@@ -120,171 +197,91 @@ export function Navbar() {
 
           <Link
             href="/harga"
-            className="text-sm font-medium text-black hover:text-primary transition-colors"
+            className={`text-[10px] font-bold tracking-[0.2em] uppercase transition-colors ${isLightMode ? "text-foreground/60 hover:text-primary" : "text-white/90 hover:text-white"}`}
           >
-            Harga
+            Pricing
           </Link>
           <Link
             href="/info-promo"
-            className="text-sm font-medium text-black hover:text-primary transition-colors"
+            className={`text-[10px] font-bold tracking-[0.2em] uppercase transition-colors ${isLightMode ? "text-foreground/60 hover:text-primary" : "text-white/90 hover:text-white"}`}
           >
-            Info & Promo
+            Insights
           </Link>
           <Link
             href="/hubungi-kami"
-            className="text-sm font-medium text-black hover:text-primary transition-colors"
+            className={`text-[10px] font-bold tracking-[0.2em] uppercase transition-colors ${isLightMode ? "text-foreground/60 hover:text-primary" : "text-white/90 hover:text-white"}`}
           >
-            Hubungi Kami
+            Contact
           </Link>
         </nav>
 
         {/* ACTION BUTTONS */}
-        <div className="hidden lg:flex items-center gap-4">
-          <button
-            aria-label="Search"
-            className="w-10 h-10 flex items-center justify-center rounded-full text-black hover:bg-black/10 transition-colors"
-          >
-            <Search className="w-5 h-5" />
+        <div className="hidden lg:flex items-center gap-6">
+          <button className={`transition-colors ${isLightMode ? "text-foreground/40 hover:text-foreground" : "text-white/40 hover:text-white"}`}>
+            <Search className="w-4 h-4" />
           </button>
-          <Button asChild>
-            <Link href="/hubungi-kami">Test Drive</Link>
+          <Button asChild className="rounded-none h-11 px-8 text-[10px] font-bold tracking-[0.2em] bg-primary text-white hover:bg-primary/90 transition-all duration-500 luxury-shadow">
+            <Link href="/hubungi-kami">DRIVE NOW</Link>
           </Button>
         </div>
 
         {/* MOBILE MENU TOGGLE */}
         <button
           type="button"
-          className="lg:hidden p-2 z-[1020] text-black relative"
+          className={`lg:hidden p-2 z-[1020] relative transition-colors ${isLightMode ? "text-foreground" : "text-white"}`}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          {isMobileMenuOpen ? (
-            <X className="w-7 h-7" />
-          ) : (
-            <Menu className="w-7 h-7" />
-          )}
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
       {/* MOBILE MENU OVERLAY */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 top-0 pt-[88px] bg-white z-[1010] flex flex-col px-6 overflow-y-auto pb-10 border-t border-black/10">
-          <nav className="flex flex-col mt-6 space-y-2">
-            <Link
-              href="/"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-3xl font-light text-black py-4 border-b border-black/5 hover:text-primary transition-colors"
-            >
-              Home
-            </Link>
-
-            <div className="flex flex-col border-b border-black/5">
-              <button
-                onClick={() => setIsMobileModelsOpen(!isMobileModelsOpen)}
-                className="flex items-center justify-between text-3xl font-light text-black py-4 transition-colors"
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 top-0 h-screen bg-background z-[1010] flex flex-col px-8 pt-24"
+          >
+            <nav className="flex flex-col space-y-2">
+              <Link
+                href="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-3xl font-black text-foreground py-6 border-b border-foreground/[0.05] uppercase tracking-tighter"
               >
-                Model Mobil
-                <span
-                  className={`w-8 h-8 rounded-full bg-black/5 flex items-center justify-center transition-transform duration-500 ${isMobileModelsOpen ? "rotate-180 bg-primary/20" : ""}`}
-                >
-                  <ChevronDown
-                    className={`w-4 h-4 ${isMobileModelsOpen ? "text-primary" : "text-black"}`}
-                  />
-                </span>
-              </button>
-
-              {isMobileModelsOpen && (
-                <div className="overflow-hidden">
-                  <div className="flex flex-col gap-6 pt-2 pb-8">
-                    <Link
-                      href="/model-mobil"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full bg-gradient-to-r from-primary/20 to-transparent border border-primary/20 rounded-xl p-4 flex justify-between items-center text-black"
-                    >
-                      <span className="font-semibold text-sm tracking-wide text-black">
-                        LIHAT SEMUA MODEL &rarr;
-                      </span>
-                    </Link>
-
-                    <div>
-                      <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
-                        Tiggo Family
-                      </p>
-                      <div className="grid grid-cols-2 gap-2">
-                        {tiggoCars.map((car) => (
-                          <Link
-                            key={car.id}
-                            href={`/model-mobil/${car.id}`}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="text-xs font-medium text-gray-700 bg-black/5 border border-black/5 px-3 py-3 rounded-lg hover:bg-black/10 hover:text-black transition-all whitespace-nowrap overflow-hidden text-ellipsis"
-                          >
-                            {car.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
-                        Omoda & J6
-                      </p>
-                      <div className="grid grid-cols-2 gap-2">
-                        {omodaCars.map((car) => (
-                          <Link
-                            key={car.id}
-                            href={`/model-mobil/${car.id}`}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="text-xs font-medium text-gray-700 bg-black/5 border border-black/5 px-3 py-3 rounded-lg hover:bg-black/10 hover:text-black transition-all whitespace-nowrap overflow-hidden text-ellipsis"
-                          >
-                            {car.name}
-                          </Link>
-                        ))}
-                        <Link
-                          href="/model-mobil/j6"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="text-xs font-medium text-gray-700 bg-black/5 border border-black/5 px-3 py-3 rounded-lg hover:bg-black/10 hover:text-black transition-all whitespace-nowrap overflow-hidden text-ellipsis"
-                        >
-                          Chery J6
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+                Home
+              </Link>
+              <Link
+                href="/model-mobil"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-3xl font-black text-foreground py-6 border-b border-foreground/[0.05] uppercase tracking-tighter"
+              >
+                Portfolio
+              </Link>
+              <Link
+                href="/harga"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-3xl font-black text-foreground py-6 border-b border-foreground/[0.05] uppercase tracking-tighter"
+              >
+                Pricing
+              </Link>
+              <Link
+                href="/hubungi-kami"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="text-3xl font-black text-foreground py-6 uppercase tracking-tighter"
+              >
+                Contact
+              </Link>
+            </nav>
+            <div className="mt-auto mb-12">
+              <Button asChild size="lg" className="w-full h-16 rounded-none bg-primary text-white font-bold tracking-widest uppercase luxury-shadow">
+                <Link href="/hubungi-kami">Request Experience</Link>
+              </Button>
             </div>
-
-            <Link
-              href="/harga"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-3xl font-light text-black py-4 border-b border-black/5 hover:text-primary transition-colors"
-            >
-              Harga
-            </Link>
-            <Link
-              href="/info-promo"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-3xl font-light text-black py-4 border-b border-black/5 hover:text-primary transition-colors"
-            >
-              Info & Promo
-            </Link>
-            <Link
-              href="/hubungi-kami"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-3xl font-light text-black py-4 hover:text-primary transition-colors"
-            >
-              Hubungi Kami
-            </Link>
-          </nav>
-          <div className="mt-8 mb-10 w-full pt-6 border-t border-black/10">
-            <Button
-              asChild
-              size="lg"
-              className="w-full h-14 text-lg font-medium"
-            >
-              <Link href="/hubungi-kami">Booking Test Drive</Link>
-            </Button>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

@@ -1,63 +1,121 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import Image from "next/image";
-import { useRef } from "react";
-import { useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { cars } from "@/data/cars";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { useHasMounted } from "@/hooks/useHasMounted";
+import { ChevronRight, ArrowRight } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 export function ProductGridSection() {
   const containerRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-
   const featuredCars = cars.slice(0, 6);
 
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      gsap.from(".showroom-card", {
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 80%",
+        },
+        y: 40,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.1,
+        ease: "power4.out"
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section ref={containerRef} className="py-20 md:py-32 bg-background relative z-10">
-      <div className="container mx-auto px-4 md:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-          <div>
-            <h2 className="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-4 text-black">
-              Koleksi <span className="text-primary">Eksklusif</span>
+    <section 
+      ref={containerRef} 
+      className="relative min-h-screen bg-background py-40 px-4 md:px-8 overflow-hidden border-t border-foreground/[0.03]"
+    >
+      <div className="container mx-auto relative z-10">
+        
+        {/* Elegant Header */}
+        <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-12">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 mb-6">
+               <div className="h-[1px] w-8 bg-primary/30" />
+               <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-primary">The Collection</span>
+            </div>
+            <h2 className="text-6xl md:text-8xl font-black uppercase tracking-tighter text-foreground leading-none">
+              THE <span className="luxury-text-stroke">LINEUP.</span>
             </h2>
-            <p className="text-gray-600 max-w-md">Temukan deretan kendaraan inovatif kami, dirancang untuk masa depan.</p>
           </div>
-          <Link href="/model-mobil" className="group flex items-center gap-2 text-black font-medium hover:text-primary transition-colors">
-            Lihat Semua Model
-            <span className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center group-hover:bg-primary transition-colors">
-              <ArrowRight className="w-4 h-4" />
-            </span>
-          </Link>
+          <div className="text-right">
+             <p className="text-[10px] font-bold tracking-[0.2em] text-foreground/40 mb-2 uppercase">Curated Excellence</p>
+             <div className="h-[1px] w-full bg-foreground/[0.05]" />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredCars.map((car, i) => (
-            <div
+        {/* Showroom Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+          {featuredCars.map((car) => (
+            <motion.div
               key={car.id}
+              className="showroom-card relative group"
             >
-              <Link href={`/model-mobil/${car.id}`} className="group block relative rounded-2xl overflow-hidden bg-white border border-black/10 aspect-[4/3] shadow-sm hover:shadow-xl transition-shadow duration-500">
-                <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/20 to-transparent z-10" />
-                <Image 
-                  fill
-                  src={car.image} 
-                  alt={car.name} 
-                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out mix-blend-multiply"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-                <div className="absolute bottom-0 left-0 w-full p-8 z-20 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                  <span className="text-primary text-sm font-bold tracking-widest uppercase mb-2 block">{car.category}</span>
-                  <h3 className="text-3xl font-bold text-black mb-2">{car.name}</h3>
-                  <p className="text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">{car.tagline}</p>
+              <Link href={`/model-mobil/${car.id}`} className="block w-full">
+                
+                {/* Powertrain Tag */}
+                <span className="text-[10px] font-bold text-primary tracking-[0.3em] mb-4 block uppercase transition-all duration-500 group-hover:translate-x-2">
+                   {car.powertrain}
+                </span>
+
+                <h3 className="text-4xl font-black text-foreground uppercase tracking-tighter mb-8 transition-colors">
+                  {car.name}
+                </h3>
+
+                <div className="relative aspect-[16/10] w-full mb-12 transform group-hover:scale-105 transition-transform duration-1000 ease-out">
+                  <Image 
+                    src={car.image} 
+                    alt={car.name} 
+                    fill 
+                    sizes="(max-width: 768px) 100vw, 30vw"
+                    className="object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
+                  />
+                  
+                  {/* Glass Card Shadow Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                </div>
+
+                <div className="flex items-center justify-between border-t border-foreground/[0.05] pt-8 group-hover:border-primary/20 transition-colors">
+                   <div className="flex flex-col">
+                      <span className="text-[9px] font-bold tracking-[0.2em] text-foreground/30 uppercase mb-2">Ref Performance</span>
+                      <span className="text-xl font-black text-foreground">Top Tier Excellence</span>
+                   </div>
+                   <div className="w-12 h-12 rounded-full border border-foreground/[0.05] flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-500">
+                      <ArrowRight className="w-5 h-5 text-foreground group-hover:text-white transition-colors" />
+                   </div>
                 </div>
               </Link>
-            </div>
+            </motion.div>
           ))}
         </div>
+
+        {/* Global Catalog Link */}
+        <div className="mt-32 flex justify-center">
+            <Link href="/model-mobil" className="group relative px-12 py-6 overflow-hidden bg-white border border-foreground/[0.05] luxury-shadow">
+              <span className="relative z-10 text-[10px] font-bold tracking-[0.4em] text-foreground uppercase group-hover:text-white transition-colors">
+                View All Models
+              </span>
+              <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+            </Link>
+        </div>
+      </div>
+
+      {/* Aesthetic Background Typography */}
+      <div className="absolute bottom-0 right-0 text-[30vw] font-black text-foreground/[0.01] leading-none uppercase tracking-tighter select-none pointer-events-none">
+        SHOWROOM
       </div>
     </section>
   );

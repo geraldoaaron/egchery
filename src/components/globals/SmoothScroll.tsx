@@ -20,12 +20,19 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
 
+    lenis.on("scroll", ScrollTrigger.update);
+
     const onUpdate = (time: number) => {
       lenis.raf(time * 1000);
     };
 
     gsap.ticker.add(onUpdate);
     gsap.ticker.lagSmoothing(0, 0);
+
+    // Refresh ScrollTrigger after a slight delay to ensure page height is settled
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 100);
 
     return () => {
       lenis.destroy();

@@ -14,7 +14,7 @@ export default function HargaPage() {
   }, [activeTab]);
 
   return (
-    <div className="pt-32 pb-24 min-h-screen bg-background flex flex-col items-center">
+    <div data-nav-theme="light" className="pt-32 pb-24 min-h-screen bg-background flex flex-col items-center">
       <div className="container mx-auto px-4 md:px-8 max-w-5xl">
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-tighter mb-4 text-black">
