@@ -30,7 +30,7 @@ export function AboutSection() {
           start: "top 80%",
         },
         scaleX: 0,
-        originX: 0,
+        transformOrigin: "left",
         duration: 2,
         ease: "expo.out"
       });
