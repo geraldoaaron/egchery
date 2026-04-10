@@ -41,7 +41,7 @@ export function ModelSelectorSection() {
   return (
     <section className="relative py-24 bg-background overflow-hidden border-t border-foreground/[0.03]">
       <div className="container mx-auto px-4 md:px-8 flex flex-col items-center">
-        
+
         {/* 1. Powertrain Tabs */}
         <div className="flex items-center gap-8 mb-12">
           {POWERTRAINS.map((type) => (
@@ -103,7 +103,7 @@ export function ModelSelectorSection() {
 
         {/* 3. Interactive Slider */}
         <div className="relative w-full max-w-6xl aspect-[16/8] md:aspect-[16/6] flex items-center justify-center mb-12">
-          
+
           {/* Navigation Arrows */}
           <button
             onClick={handlePrev}
@@ -111,7 +111,7 @@ export function ModelSelectorSection() {
           >
             <ChevronLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
           </button>
-          
+
           <button
             onClick={handleNext}
             className="absolute right-4 md:right-12 z-10 w-12 h-12 rounded-full border border-foreground/[0.05] flex items-center justify-center bg-white/50 backdrop-blur-md hover:bg-primary hover:border-primary hover:text-white transition-all duration-500 group"
@@ -135,6 +135,7 @@ export function ModelSelectorSection() {
                     src={currentCar.image}
                     alt={currentCar.name}
                     fill
+                    priority
                     className="object-contain"
                   />
                 </div>

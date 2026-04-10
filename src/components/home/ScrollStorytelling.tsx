@@ -77,96 +77,107 @@ export function ScrollStorytelling() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const ctx = gsap.context(() => {
-      // Pinning the Main Container - Increased end distance for "sticky" feel
-      const pinTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: triggerRef.current,
-          start: "top top",
-          end: "+=300%",
-          pin: true,
-          scrub: 1,
-          anticipatePin: 1,
-          onUpdate: (self) => {
-            // Show selector earlier to allow for interaction time
-            setIsSelectorVisible(self.progress > 0.6);
+    let ctx: gsap.Context;
+    let timer: NodeJS.Timeout;
+
+    // Use a small timeout to ensure the DOM is settled after route transition
+    timer = setTimeout(() => {
+      ctx = gsap.context(() => {
+        // Pinning the Main Container - Increased end distance for "sticky" feel
+        const pinTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: triggerRef.current,
+            start: "top top",
+            end: "+=300%",
+            pin: true,
+            scrub: 1,
+            anticipatePin: 1,
+            invalidateOnRefresh: true, // Recalculate on resize/refresh
+            onUpdate: (self) => {
+              // Show selector earlier to allow for interaction time
+              setIsSelectorVisible(self.progress > 0.6);
+            }
           }
-        }
-      });
+        });
 
-      // 1. Initial Car Scale & Soft Rotation
-      pinTl.to(carWrapperRef.current, {
-        scale: 1.1,
-        y: -20,
-        rotate: 1,
-        duration: 2,
-        ease: "power2.inOut"
-      }, 0);
+        // 1. Initial Car Scale & Soft Rotation
+        pinTl.to(carWrapperRef.current, {
+          scale: 1.1,
+          y: -20,
+          rotate: 1,
+          duration: 2,
+          ease: "power2.inOut"
+        }, 0);
 
-      // 2. Feature Dot Reveals
-      CORE_FEATURES.forEach((_, i) => {
-        pinTl.fromTo(`.luxury-dot-${i}`,
-          { scale: 0, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.5 },
-          `+=${i * 0.4}`
+        // 2. Feature Dot Reveals
+        CORE_FEATURES.forEach((feature, i) => {
+          pinTl.fromTo(`.luxury-dot-${i}`,
+            { scale: 0, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.5 },
+            `+=${i * 0.4}`
+          );
+
+          pinTl.fromTo(`.luxury-text-${i}`,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.6 },
+            "<"
+          );
+        });
+
+        // 3. Feature Fade Out (Before Selector Appears)
+        pinTl.to(".storytelling-feature", {
+          opacity: 0,
+          y: -10,
+          stagger: 0.1,
+          duration: 1,
+          ease: "power2.inOut",
+          display: "none"
+        }, "+=1");
+
+        // 4. Selector UI Fade In (Centered Elements)
+        pinTl.fromTo([".selector-ui-tabs", ".selector-ui-dropdown", ".selector-ui-footer"],
+          { opacity: 0, y: 20, xPercent: -50, x: 0 },
+          {
+            opacity: 1,
+            y: 0,
+            xPercent: -50,
+            duration: 1.5,
+            ease: "power3.out",
+            display: "flex",
+            stagger: 0.1
+          },
+          "-=0.2"
         );
 
-        pinTl.fromTo(`.luxury-text-${i}`,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.6 },
+        // 5. Navigation Arrows Fade In (Full Width)
+        pinTl.fromTo(".selector-ui-nav",
+          { opacity: 0 },
+          { opacity: 1, duration: 1, ease: "power2.inOut", display: "flex" },
           "<"
         );
-      });
 
-      // 3. Feature Fade Out (Before Selector Appears)
-      pinTl.to(".storytelling-feature", {
-        opacity: 0,
-        y: -10,
-        stagger: 0.1,
-        duration: 1,
-        ease: "power2.inOut",
-        display: "none"
-      }, "+=1");
+        // Add a small "hold" at the end of the timeline
+        pinTl.to({}, { duration: 2 });
 
-      // 4. Selector UI Fade In (Centered Elements)
-      pinTl.fromTo([".selector-ui-tabs", ".selector-ui-dropdown", ".selector-ui-footer"],
-        { opacity: 0, y: 20, xPercent: -50, x: 0 },
-        {
-          opacity: 1,
-          y: 0,
-          xPercent: -50,
-          duration: 1.5,
-          ease: "power3.out",
-          display: "flex",
-          stagger: 0.1
-        },
-        "-=0.2"
-      );
+        // Background Fade
+        gsap.to(".bg-silver", {
+          scrollTrigger: {
+            trigger: triggerRef.current,
+            start: "top top",
+            end: "bottom center",
+            scrub: true,
+            invalidateOnRefresh: true
+          },
+          opacity: 0.3
+        });
 
-      // 5. Navigation Arrows Fade In (Full Width)
-      pinTl.fromTo(".selector-ui-nav",
-        { opacity: 0 },
-        { opacity: 1, duration: 1, ease: "power2.inOut", display: "flex" },
-        "<"
-      );
+      }, containerRef);
+    }, 100);
 
-      // Add a small "hold" at the end of the timeline
-      pinTl.to({}, { duration: 2 });
-
-      // Background Fade
-      gsap.to(".bg-silver", {
-        scrollTrigger: {
-          trigger: triggerRef.current,
-          start: "top top",
-          end: "bottom center",
-          scrub: true,
-        },
-        opacity: 0.3
-      });
-
-    }, containerRef);
-
-    return () => ctx.revert();
+    return () => {
+      clearTimeout(timer);
+      if (ctx) ctx.revert();
+    };
   }, []);
 
   return (
@@ -281,6 +292,7 @@ export function ScrollStorytelling() {
                     alt={currentCar.name}
                     fill
                     className="object-contain mix-blend-multiply"
+                    priority
                   />
                 </motion.div>
               </AnimatePresence>
