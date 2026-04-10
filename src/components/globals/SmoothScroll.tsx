@@ -8,10 +8,6 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 // Register plugin outside to ensure it's only done once and globally available
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
-  ScrollTrigger.config({ 
-    ignoreMobileResize: true, // Prevent address bar hides/shows from breaking pins
-    autoRefreshEvents: "visibilitychange,DOMContentLoaded,load" // Only refresh on critical events
-  });
 }
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {

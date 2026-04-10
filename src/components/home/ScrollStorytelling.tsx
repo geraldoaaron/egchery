@@ -78,14 +78,15 @@ export function ScrollStorytelling() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Timeline scrubs based on the container's scroll progress
-      // NO MORE PIN: TRUE - CSS Sticky handles it now.
+      // Pinning the Main Container - Increased end distance for "sticky" feel
       const pinTl = gsap.timeline({
         scrollTrigger: {
-          trigger: containerRef.current,
+          trigger: triggerRef.current,
           start: "top top",
-          end: "bottom bottom",
+          end: "+=300%",
+          pin: true,
           scrub: 1,
+          anticipatePin: 1,
           onUpdate: (self) => {
             // Show selector earlier to allow for interaction time
             setIsSelectorVisible(self.progress > 0.6);
@@ -103,7 +104,7 @@ export function ScrollStorytelling() {
       }, 0);
 
       // 2. Feature Dot Reveals
-      CORE_FEATURES.forEach((feature, i) => {
+      CORE_FEATURES.forEach((_, i) => {
         pinTl.fromTo(`.luxury-dot-${i}`,
           { scale: 0, opacity: 0 },
           { scale: 1, opacity: 1, duration: 0.5 },
@@ -155,9 +156,9 @@ export function ScrollStorytelling() {
       // Background Fade
       gsap.to(".bg-silver", {
         scrollTrigger: {
-          trigger: containerRef.current,
+          trigger: triggerRef.current,
           start: "top top",
-          end: "bottom bottom",
+          end: "bottom center",
           scrub: true,
         },
         opacity: 0.3
@@ -169,12 +170,11 @@ export function ScrollStorytelling() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative h-[300vh] bg-background border-t border-foreground/[0.03]">
-      {/* Scrollable container with sticky content */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        
-        {/* Background Silver Gradient Layer */}
-        <div className="bg-silver absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(0,0,0,0.05)_0%,transparent_70%)] opacity-0 pointer-events-none" />
+    <div ref={containerRef} className="bg-background overflow-hidden relative border-t border-foreground/[0.03]">
+      {/* Background Silver Gradient Layer */}
+      <div className="bg-silver absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(0,0,0,0.05)_0%,transparent_70%)] opacity-0 pointer-events-none" />
+
+      <div ref={triggerRef} className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden">
 
         {/* Subtle Decorative Typography - Dynamic */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 opacity-[0.02] select-none pointer-events-none transition-all duration-1000">
