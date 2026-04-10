@@ -281,7 +281,6 @@ export function ScrollStorytelling() {
                     alt={currentCar.name}
                     fill
                     className="object-contain mix-blend-multiply"
-                    priority
                   />
                 </motion.div>
               </AnimatePresence>

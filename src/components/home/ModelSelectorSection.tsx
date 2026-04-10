@@ -135,7 +135,6 @@ export function ModelSelectorSection() {
                     src={currentCar.image}
                     alt={currentCar.name}
                     fill
-                    priority
                     className="object-contain"
                   />
                 </div>

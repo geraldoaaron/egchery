@@ -72,7 +72,7 @@ export function HeroCarousel() {
   }, [handleNext]);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-black text-white">
+    <section data-nav-theme="dark" className="relative h-screen w-full overflow-hidden bg-black text-white">
       {/* Background Layer */}
       <AnimatePresence mode="wait">
         <motion.div
