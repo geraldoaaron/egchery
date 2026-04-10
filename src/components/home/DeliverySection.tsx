@@ -1,22 +1,90 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useMotionValue, useAnimationFrame } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
-import { MapPin, Phone, Shield, Clock, ChevronRight, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
+const galleryImages = [
+  {
+    id: 1,
+    url: "/images/cars/ice/Tiggo8.png",
+    name: "Keluarga Bpk. Santoso",
+    desc: "Tiggo 8 Series - Kebahagiaan baru untuk keluarga.",
+    date: "Mars 2024"
+  },
+  {
+    id: 2,
+    url: "/images/cars/ice/Omoda-5-GT-AWD.png",
+    name: "Ibu Maya & Omoda 5 GT",
+    desc: "Gaya hidup modern dengan performa AWD yang tangguh.",
+    date: "April 2024"
+  },
+  {
+    id: 3,
+    url: "/images/cars/csh/Tiggo-Cross-CSH.png",
+    name: "Bpk. Andi - Tiggo Cross",
+    desc: "Petualangan baru dimulai dengan kenyamanan maksimal.",
+    date: "Mei 2024"
+  },
+  {
+    id: 4,
+    url: "/images/cars/bev/CheryE5.png",
+    name: "Keluarga Dr. Linda",
+    desc: "Melangkah ke masa depan dengan Omoda E5 yang cerdas.",
+    date: "Juni 2024"
+  },
+  {
+    id: 5,
+    url: "/images/cars/ice/Tiggo-8-Pro-Max.png",
+    name: "Bpk. Hendra & Tiggo 8 Pro Max",
+    desc: "Kemewahan dan tenaga dalam satu genggaman.",
+    date: "Juli 2024"
+  }
+];
+
 export function DeliverySection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const x = useMotionValue(0);
+  const [baseWidth, setBaseWidth] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Triple the set to ensure massive headroom for dragging
+  const tripledImages = [...galleryImages, ...galleryImages, ...galleryImages];
+
+  useEffect(() => {
+    if (containerRef.current) {
+      // We only care about the width of ONE set
+      setBaseWidth(containerRef.current.scrollWidth / 3);
+    }
+  }, []);
+
+  // Auto-scroll loop
+  useAnimationFrame((t, delta) => {
+    if (isPaused || !baseWidth) return;
+
+    // Slow 'Tenang' movement: ~30px per second
+    const moveBy = (delta / 1000) * -30;
+    let newX = x.get() + moveBy;
+
+    // Boundary check for infinite loop
+    if (newX <= -baseWidth) {
+      newX = 0;
+    } else if (newX >= 0) {
+      newX = -baseWidth;
+    }
+
+    x.set(newX);
+  });
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      gsap.from(".delivery-reveal", {
+      gsap.from(".gallery-header-reveal", {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top 80%",
@@ -24,7 +92,6 @@ export function DeliverySection() {
         y: 40,
         opacity: 0,
         duration: 1.2,
-        stagger: 0.1,
         ease: "power4.out"
       });
     }, sectionRef);
@@ -33,96 +100,84 @@ export function DeliverySection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-40 bg-background relative overflow-hidden border-t border-foreground/[0.03]">
-      <div className="container mx-auto px-4 md:px-8 relative z-10">
-        
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-end mb-32">
-          <div className="lg:col-span-8">
-             <div className="delivery-reveal flex items-center gap-3 mb-8">
-                <div className="w-8 h-[1px] bg-primary/30" />
-                <span className="text-[10px] font-bold text-primary tracking-[0.4em] uppercase">Global Presence</span>
-             </div>
-             <h2 className="delivery-reveal text-7xl md:text-[8vw] font-black uppercase tracking-tighter text-foreground leading-none">
-                OUR <br /> <span className="luxury-text-stroke">NETWORK.</span>
-             </h2>
+    <section
+      ref={sectionRef}
+      className="py-40 bg-[#050505] relative overflow-hidden border-t border-white/[0.03]"
+    >
+      <div className="relative z-10 w-full">
+
+        {/* Header Section */}
+        <div className="container mx-auto px-4 md:px-8 flex flex-col items-center text-center mb-20 max-w-4xl">
+          <div className="gallery-header-reveal flex items-center gap-3 mb-6">
+            <div className="w-8 h-[1px] bg-primary/30" />
+            <span className="text-[10px] font-bold text-primary tracking-[0.4em] uppercase">Chery Family Memories</span>
+            <div className="w-8 h-[1px] bg-primary/30" />
           </div>
-          <div className="lg:col-span-4 delivery-reveal">
-             <p className="text-[10px] font-bold tracking-[0.3em] text-foreground/40 leading-relaxed uppercase">
-                A coordinated network of elite service centers providing real-time support for the modern driver.
-             </p>
-          </div>
+          <h2 className="gallery-header-reveal text-4xl md:text-5xl font-black uppercase tracking-tighter text-white leading-none">
+            THANK YOU CHERY FAMILY.
+          </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-          
-          <div className="lg:col-span-12 xl:col-span-5">
-            <div className="delivery-reveal mb-16 grid grid-cols-1 md:grid-cols-2 gap-8">
-               <ContactLuxuryItem 
-                  title="Main Gallery"
-                  desc="Jl. Raya Utama No. 88, South Jakarta"
-                  icon={<MapPin className="w-4 h-4 text-primary/60" />}
-                />
-                <ContactLuxuryItem 
-                  title="Direct Line"
-                  desc="+62 21 1234 5678"
-                  icon={<Phone className="w-4 h-4 text-primary/60" />}
-                />
-                <ContactLuxuryItem 
-                  title="Availability"
-                  desc="Mon - Sun | 08:00 - 20:00"
-                  icon={<Clock className="w-4 h-4 text-primary/60" />}
-                />
-                <ContactLuxuryItem 
-                  title="WhatsApp"
-                  desc="+62 812 3456 7890"
-                  icon={<ArrowRight className="w-4 h-4 text-primary/60" />}
-                />
-            </div>
+        {/* INTERACTIVE INFINITE PHOTO TICKER */}
+        <div className="relative w-full overflow-hidden py-10 cursor-grab active:cursor-grabbing">
+          {/* Side Fading Masks */}
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#050505] to-transparent z-20 pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#050505] to-transparent z-20 pointer-events-none" />
 
-            <div className="delivery-reveal">
-               <Button className="h-16 px-12 bg-primary text-white rounded-none hover:bg-primary/90 transition-all duration-300 text-[10px] font-bold tracking-[0.4em] uppercase luxury-shadow">
-                  <Link href="/hubungi-kami" className="flex items-center gap-2">
-                     Connect With Us <ChevronRight className="w-4 h-4" />
-                  </Link>
-               </Button>
-            </div>
-          </div>
+          <motion.div
+            ref={containerRef}
+            drag="x"
+            style={{ x }}
+            onDragStart={() => setIsPaused(true)}
+            onDragEnd={() => {
+              // Smoothly wait before resuming
+              setTimeout(() => setIsPaused(false), 2000);
+            }}
+            // Constraint check: Reset position if dragged too far
+            onUpdate={(latest: any) => {
+              if (typeof latest.x !== 'number' || !baseWidth) return;
+              if (latest.x <= -baseWidth * 2) x.set(latest.x + baseWidth);
+              if (latest.x >= 0) x.set(latest.x - baseWidth);
+            }}
+            className="flex gap-6 w-max"
+          >
+            {tripledImages.map((item, i) => (
+              <div
+                key={`${item.id}-${i}`}
+                className="relative group w-[300px] md:w-[400px] flex flex-col gap-5 select-none"
+              >
+                {/* Photo Strip Item */}
+                <div className="relative aspect-[16/10] overflow-hidden rounded-sm border border-white/5 grayscale group-hover:grayscale-0 group-hover:border-primary/30 transition-all duration-700 bg-white/[0.02] pointer-events-none">
+                  <Image
+                    src={item.url}
+                    alt={item.name}
+                    fill
+                    sizes="(max-width: 768px) 300px, 400px"
+                    className="object-contain p-6 md:p-8 transition-transform duration-1000 group-hover:scale-105"
+                  />
+                  {/* Glass Shine effect */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.05] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                </div>
 
-          <div className="lg:col-span-12 xl:col-span-7 relative">
-            <div className="delivery-reveal relative aspect-video w-full rounded-none overflow-hidden border border-foreground/[0.03] group luxury-shadow">
-              <Image 
-                src="https://images.unsplash.com/photo-1517524206127-48bb03fd8fec?q=80&w=2574&auto=format&fit=crop"
-                alt="Chery Showroom"
-                fill
-                sizes="(max-width: 1024px) 100vw, 60vw"
-                className="object-cover transition-all duration-1000 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-white/40 via-transparent to-transparent opacity-60" />
-              <div className="absolute bottom-10 left-10 p-6 bg-white/80 backdrop-blur-md border border-foreground/[0.03] text-[9px] font-bold text-foreground tracking-[0.4em] uppercase">
-                 Chery Central Lounge
+                {/* Faint Label - Responsive sizing */}
+                <div className="px-1 flex flex-col gap-2 opacity-60 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[11px] font-mono text-primary uppercase tracking-[0.2em]">{item.name}</span>
+                    <span className="text-[9px] font-mono text-white/40 uppercase tracking-[0.2em]">{item.date}</span>
+                  </div>
+                  <div className="h-[1px] w-full bg-white/10 group-hover:bg-primary/30 transition-colors" />
+                </div>
               </div>
-            </div>
-          </div>
+            ))}
+          </motion.div>
         </div>
 
       </div>
 
-      {/* Decorative Background Text */}
-      <div className="absolute bottom-0 right-0 opacity-[0.01] pointer-events-none select-none z-0">
-          <span className="text-[30vw] font-black text-foreground leading-none uppercase tracking-tighter">LOCATIONS</span>
+      {/* Aesthetic Background Text */}
+      <div className="absolute bottom-5 left-10 opacity-[0.03] pointer-events-none select-none z-0">
+        <span className="text-[12vw] font-black text-white leading-none uppercase tracking-tighter">MOMENTS</span>
       </div>
     </section>
-  );
-}
-
-function ContactLuxuryItem({ title, desc, icon }: any) {
-  return (
-    <div className="delivery-reveal p-8 border border-foreground/[0.03] group bg-white luxury-shadow transition-all duration-500 hover:border-primary/20">
-      <div className="flex items-center gap-3 mb-6">
-         {icon}
-         <h4 className="text-[10px] font-bold text-foreground opacity-30 uppercase tracking-[0.3em]">{title}</h4>
-      </div>
-      <p className="text-xs font-bold text-foreground tracking-widest leading-relaxed uppercase">{desc}</p>
-    </div>
   );
 }

@@ -11,10 +11,12 @@ export default function Home() {
     <>
       <HeroCarousel />
       <HeroSection />
-      <ScrollStorytellingLazy />
+      {/* Reserve 300vh space to prevent layout shift when ScrollStorytelling lazy-loads */}
+      <div className="min-h-[300vh]">
+        <ScrollStorytellingLazy />
+      </div>
       <AboutSection />
       <ProductGridSection />
-      <PricingHighlightSection />
       <DeliverySection />
     </>
   );

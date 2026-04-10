@@ -65,3 +65,19 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #ccc;
 }
+
+/* Custom Animations */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; transform: scale(1) translateX(-50%); }
+  50% { opacity: 0.8; transform: scale(1.05) translateX(-50%); }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Utilities */
+.mask-gradient-to-t {
+  mask-image: linear-gradient(to top, rgba(0,0,0,1), transparent);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1), transparent);
+}

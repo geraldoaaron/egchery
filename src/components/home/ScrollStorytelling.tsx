@@ -196,7 +196,6 @@ export function ScrollStorytelling() {
               </span>
               {selectedType === type && (
                 <motion.div
-                  layoutId="powertrainUnderline"
                   className="absolute bottom-0 left-[20%] right-[20%] h-[2px] bg-primary"
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
@@ -264,27 +263,19 @@ export function ScrollStorytelling() {
             </button>
           </div>
 
+          {/* Car wrapper - GSAP targets this for scale animation */}
           <div ref={carWrapperRef} className="relative w-full h-full">
-            {/* Single Car Display - Transition only when currentCar.id changes */}
+
+            {/* Car Image - plain CSS, no Framer Motion inside GSAP-pinned area */}
             <div className="relative w-full h-full">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currentCar.id}
-                  initial={{ opacity: 0, scale: 0.99 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.99 }}
-                  transition={{ duration: 0.15, ease: "circOut" }}
-                  className="relative w-full h-full"
-                >
-                  <Image
-                    src={currentCar.image}
-                    alt={currentCar.name}
-                    fill
-                    className="object-contain mix-blend-multiply"
-                    priority
-                  />
-                </motion.div>
-              </AnimatePresence>
+              <Image
+                key={`${selectedType}-${currentCar.id}`}
+                src={currentCar.image}
+                alt={currentCar.name}
+                fill
+                className="object-contain mix-blend-multiply"
+                priority
+              />
             </div>
 
             {/* Storytelling Floating Descriptors - Controlled by GSAP display and opacity */}
@@ -347,19 +338,14 @@ export function ScrollStorytelling() {
 
         {/* 4. Details & Action (Part of Selector) */}
         <div className="selector-ui-footer absolute bottom-24 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center opacity-0 hidden">
-          <motion.div
-            key={`price-${currentCar.id}`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6 flex flex-col items-center"
-          >
+          <div key={`price-${currentCar.id}`} className="mb-6 flex flex-col items-center">
             <span className="text-[9px] font-bold text-foreground/30 uppercase tracking-[0.4em] mb-1 block">
               Starts from
             </span>
             <span className="text-2xl md:text-3xl font-black text-foreground uppercase tracking-tight">
               {currentCar.price}
             </span>
-          </motion.div>
+          </div>
 
           <Button
             asChild

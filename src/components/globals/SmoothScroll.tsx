@@ -59,10 +59,12 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       lenisInstance.scrollTo(0, { immediate: true });
     }
 
-    // Multi-stage ScrollTrigger refresh to handle lazy-loaded components
-    const t1 = setTimeout(() => ScrollTrigger.refresh(), 100);
-    const t2 = setTimeout(() => ScrollTrigger.refresh(), 500);
-    const t3 = setTimeout(() => ScrollTrigger.refresh(), 1500);
+    // Multi-stage ScrollTrigger refresh
+    // First refresh at 350ms - AFTER PageTransition animation (250ms) completes
+    // This prevents GSAP from calculating positions while elements are still at opacity:0
+    const t1 = setTimeout(() => ScrollTrigger.refresh(), 350);
+    const t2 = setTimeout(() => ScrollTrigger.refresh(), 1000);
+    const t3 = setTimeout(() => ScrollTrigger.refresh(), 2500);
 
     return () => {
       clearTimeout(t1);

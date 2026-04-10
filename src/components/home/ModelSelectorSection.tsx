@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,9 +13,17 @@ const POWERTRAINS = ["BEV", "CSH", "ICE"] as const;
 type Powertrain = typeof POWERTRAINS[number];
 
 export function ModelSelectorSection() {
+  const pathname = usePathname();
   const [selectedType, setSelectedType] = useState<Powertrain>("BEV");
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // Reset state completely on every navigation to prevent stale state
+  useEffect(() => {
+    setSelectedType("BEV");
+    setActiveIndex(0);
+    setIsDropdownOpen(false);
+  }, [pathname]);
 
   // Filter cars based on selected powertrain
   const filteredCars = useMemo(() => {
@@ -55,7 +64,6 @@ export function ModelSelectorSection() {
               </span>
               {selectedType === type && (
                 <motion.div
-                  layoutId="powertrainUnderline"
                   className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary"
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
@@ -119,28 +127,25 @@ export function ModelSelectorSection() {
             <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
           </button>
 
-          {/* Car Visualization */}
+          {/* Car Visualization - CSS transition, no AnimatePresence (prevents race conditions) */}
           <div className="relative w-full h-full">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentCar.id}
-                initial={{ opacity: 0, scale: 0.95, x: 20 }}
-                animate={{ opacity: 1, scale: 1, x: 0 }}
-                exit={{ opacity: 0, scale: 0.95, x: -20 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute inset-0 flex items-center justify-center"
+            <div
+              key={`${selectedType}-${currentCar.id}`}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <div className="relative w-full h-full max-w-4xl drop-shadow-[0_40px_80px_rgba(0,0,0,0.1)]"
+                style={{ transition: 'opacity 0.2s ease' }}
               >
-                <div className="relative w-full h-full max-w-4xl drop-shadow-[0_40px_80px_rgba(0,0,0,0.1)]">
-                  <Image
-                    src={currentCar.image}
-                    alt={currentCar.name}
-                    fill
-                    priority
-                    className="object-contain"
-                  />
-                </div>
-              </motion.div>
-            </AnimatePresence>
+                <Image
+                  key={`img-${selectedType}-${currentCar.id}`}
+                  src={currentCar.image}
+                  alt={currentCar.name}
+                  fill
+                  priority
+                  className="object-contain"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Floor Shadow Reflection Overlay */}
@@ -149,19 +154,14 @@ export function ModelSelectorSection() {
 
         {/* 4. Details & Action */}
         <div className="flex flex-col items-center text-center">
-          <motion.div
-            key={`price-${currentCar.id}`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
-          >
+          <div key={`price-${selectedType}-${currentCar.id}`} className="mb-8">
             <span className="text-[10px] font-bold text-foreground/30 uppercase tracking-[0.4em] mb-2 block">
               Starts from
             </span>
             <span className="text-3xl md:text-5xl font-black text-foreground uppercase tracking-tight">
               {currentCar.price}
             </span>
-          </motion.div>
+          </div>
 
           <Button
             asChild
