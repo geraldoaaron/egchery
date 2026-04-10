@@ -74,7 +74,7 @@ export function HeroCarousel() {
   return (
     <section data-nav-theme="dark" className="relative h-screen w-full overflow-hidden bg-black text-white">
       {/* Background Layer */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence >
         <motion.div
           key={`bg-${HERO_SLIDES[currentIndex].id}`}
           initial={{ opacity: 0, scale: 1.1 }}

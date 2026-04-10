@@ -18,7 +18,7 @@ export function HeroSection() {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power4.out", duration: 1.5 } });
 
-      tl.from(".hero-tagline", { y: -20, opacity: 0, delay: 0.5 })
+      tl.from(".hero-tagline", { y: -20, opacity: 0, delay: 0.1 })
         .from(".hero-title", { y: 40, opacity: 0 }, "-=1")
         .from(".vehicle-cluster", { scale: 0.9, opacity: 0, y: 50 }, "-=1.2")
         .from(".hero-details", { y: 20, opacity: 0, stagger: 0.1 }, "-=1")

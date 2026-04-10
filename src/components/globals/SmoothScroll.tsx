@@ -48,12 +48,22 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       lenisRef.current.scrollTo(0, { immediate: true });
     }
     
-    // Refresh ScrollTrigger after a slight delay to ensure page height is settled
-    const timer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 100);
+    // Clear GSAP scroll memory to prevent offset inheritance from previous pages
+    ScrollTrigger.clearScrollMemory();
 
-    return () => clearTimeout(timer);
+    // Refresh ScrollTrigger at multiple stages to ensure layout is settled
+    // especially for late-loading images in production
+    const refreshTimes = [100, 500, 2000];
+    const timers: NodeJS.Timeout[] = [];
+
+    refreshTimes.forEach((delay) => {
+      const timer = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, delay);
+      timers.push(timer);
+    });
+
+    return () => timers.forEach(clearTimeout);
   }, [pathname]);
 
   return <>{children}</>;
