@@ -92,7 +92,10 @@ export function ScrollStorytelling() {
             pin: true,
             scrub: 1,
             anticipatePin: 1,
-            invalidateOnRefresh: true, // Recalculate on resize/refresh
+            immediateRender: false,
+            pinType: "fixed",
+            refreshPriority: 1,
+            invalidateOnRefresh: true,
             onUpdate: (self) => {
               // Show selector earlier to allow for interaction time
               setIsSelectorVisible(self.progress > 0.6);
@@ -166,6 +169,7 @@ export function ScrollStorytelling() {
             start: "top top",
             end: "bottom center",
             scrub: true,
+            immediateRender: false,
             invalidateOnRefresh: true
           },
           opacity: 0.3
