@@ -77,119 +77,104 @@ export function ScrollStorytelling() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    let ctx: gsap.Context;
-    let timer: NodeJS.Timeout;
-
-    // Use a small timeout to ensure the DOM is settled after route transition
-    timer = setTimeout(() => {
-      ctx = gsap.context(() => {
-        // Pinning the Main Container - Increased end distance for "sticky" feel
-        const pinTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: triggerRef.current,
-            start: "top top",
-            end: "+=300%",
-            pin: true,
-            scrub: 1,
-            anticipatePin: 1,
-            immediateRender: false,
-            pinType: "fixed",
-            refreshPriority: 1,
-            invalidateOnRefresh: true,
-            onUpdate: (self) => {
-              // Show selector earlier to allow for interaction time
-              setIsSelectorVisible(self.progress > 0.6);
-            }
+    const ctx = gsap.context(() => {
+      // Timeline scrubs based on the container's scroll progress
+      // NO MORE PIN: TRUE - CSS Sticky handles it now.
+      const pinTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1,
+          onUpdate: (self) => {
+            // Show selector earlier to allow for interaction time
+            setIsSelectorVisible(self.progress > 0.6);
           }
-        });
+        }
+      });
 
-        // 1. Initial Car Scale & Soft Rotation
-        pinTl.to(carWrapperRef.current, {
-          scale: 1.1,
-          y: -20,
-          rotate: 1,
-          duration: 2,
-          ease: "power2.inOut"
-        }, 0);
+      // 1. Initial Car Scale & Soft Rotation
+      pinTl.to(carWrapperRef.current, {
+        scale: 1.1,
+        y: -20,
+        rotate: 1,
+        duration: 2,
+        ease: "power2.inOut"
+      }, 0);
 
-        // 2. Feature Dot Reveals
-        CORE_FEATURES.forEach((feature, i) => {
-          pinTl.fromTo(`.luxury-dot-${i}`,
-            { scale: 0, opacity: 0 },
-            { scale: 1, opacity: 1, duration: 0.5 },
-            `+=${i * 0.4}`
-          );
-
-          pinTl.fromTo(`.luxury-text-${i}`,
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 0.6 },
-            "<"
-          );
-        });
-
-        // 3. Feature Fade Out (Before Selector Appears)
-        pinTl.to(".storytelling-feature", {
-          opacity: 0,
-          y: -10,
-          stagger: 0.1,
-          duration: 1,
-          ease: "power2.inOut",
-          display: "none"
-        }, "+=1");
-
-        // 4. Selector UI Fade In (Centered Elements)
-        pinTl.fromTo([".selector-ui-tabs", ".selector-ui-dropdown", ".selector-ui-footer"],
-          { opacity: 0, y: 20, xPercent: -50, x: 0 },
-          {
-            opacity: 1,
-            y: 0,
-            xPercent: -50,
-            duration: 1.5,
-            ease: "power3.out",
-            display: "flex",
-            stagger: 0.1
-          },
-          "-=0.2"
+      // 2. Feature Dot Reveals
+      CORE_FEATURES.forEach((feature, i) => {
+        pinTl.fromTo(`.luxury-dot-${i}`,
+          { scale: 0, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.5 },
+          `+=${i * 0.4}`
         );
 
-        // 5. Navigation Arrows Fade In (Full Width)
-        pinTl.fromTo(".selector-ui-nav",
-          { opacity: 0 },
-          { opacity: 1, duration: 1, ease: "power2.inOut", display: "flex" },
+        pinTl.fromTo(`.luxury-text-${i}`,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6 },
           "<"
         );
+      });
 
-        // Add a small "hold" at the end of the timeline
-        pinTl.to({}, { duration: 2 });
+      // 3. Feature Fade Out (Before Selector Appears)
+      pinTl.to(".storytelling-feature", {
+        opacity: 0,
+        y: -10,
+        stagger: 0.1,
+        duration: 1,
+        ease: "power2.inOut",
+        display: "none"
+      }, "+=1");
 
-        // Background Fade
-        gsap.to(".bg-silver", {
-          scrollTrigger: {
-            trigger: triggerRef.current,
-            start: "top top",
-            end: "bottom center",
-            scrub: true,
-            immediateRender: false,
-            invalidateOnRefresh: true
-          },
-          opacity: 0.3
-        });
+      // 4. Selector UI Fade In (Centered Elements)
+      pinTl.fromTo([".selector-ui-tabs", ".selector-ui-dropdown", ".selector-ui-footer"],
+        { opacity: 0, y: 20, xPercent: -50, x: 0 },
+        {
+          opacity: 1,
+          y: 0,
+          xPercent: -50,
+          duration: 1.5,
+          ease: "power3.out",
+          display: "flex",
+          stagger: 0.1
+        },
+        "-=0.2"
+      );
 
-      }, containerRef);
-    }, 100);
+      // 5. Navigation Arrows Fade In (Full Width)
+      pinTl.fromTo(".selector-ui-nav",
+        { opacity: 0 },
+        { opacity: 1, duration: 1, ease: "power2.inOut", display: "flex" },
+        "<"
+      );
 
-    return () => {
-      clearTimeout(timer);
-      if (ctx) ctx.revert();
-    };
+      // Add a small "hold" at the end of the timeline
+      pinTl.to({}, { duration: 2 });
+
+      // Background Fade
+      gsap.to(".bg-silver", {
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: true,
+        },
+        opacity: 0.3
+      });
+
+    }, containerRef);
+
+    return () => ctx.revert();
   }, []);
 
   return (
-    <div ref={containerRef} className="bg-background overflow-hidden relative border-t border-foreground/[0.03]">
-      {/* Background Silver Gradient Layer */}
-      <div className="bg-silver absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(0,0,0,0.05)_0%,transparent_70%)] opacity-0 pointer-events-none" />
-
-      <div ref={triggerRef} className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+    <div ref={containerRef} className="relative h-[300vh] bg-background border-t border-foreground/[0.03]">
+      {/* Scrollable container with sticky content */}
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
+        
+        {/* Background Silver Gradient Layer */}
+        <div className="bg-silver absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(0,0,0,0.05)_0%,transparent_70%)] opacity-0 pointer-events-none" />
 
         {/* Subtle Decorative Typography - Dynamic */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 opacity-[0.02] select-none pointer-events-none transition-all duration-1000">
