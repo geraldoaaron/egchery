@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -8,9 +9,19 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 // Register plugin outside to ensure it's only done once and globally available
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({
+    ignoreMobileResize: true,
+    autoRefreshEvents: "visibilitychange,DOMContentLoaded,load"
+  });
 }
 
+// Global lenis instance so we can scroll-to-top from anywhere
+let lenisInstance: Lenis | null = null;
+
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
+  // Initialize Lenis once
   useEffect(() => {
     // Disable Lenis on mobile devices for stability
     if (typeof window === "undefined" || window.innerWidth < 1024) return;
@@ -19,6 +30,8 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
+
+    lenisInstance = lenis;
 
     lenis.on("scroll", ScrollTrigger.update);
 
@@ -29,16 +42,34 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     gsap.ticker.add(onUpdate);
     gsap.ticker.lagSmoothing(0, 0);
 
-    // Refresh ScrollTrigger after a slight delay to ensure page height is settled
-    setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 100);
-
     return () => {
       lenis.destroy();
+      lenisInstance = null;
       gsap.ticker.remove(onUpdate);
     };
   }, []);
+
+  // Reset scroll position and refresh ScrollTrigger on every route change
+  useEffect(() => {
+    // Force scroll to top immediately
+    window.scrollTo(0, 0);
+
+    // Also tell Lenis to reset if it's active
+    if (lenisInstance) {
+      lenisInstance.scrollTo(0, { immediate: true });
+    }
+
+    // Multi-stage ScrollTrigger refresh to handle lazy-loaded components
+    const t1 = setTimeout(() => ScrollTrigger.refresh(), 100);
+    const t2 = setTimeout(() => ScrollTrigger.refresh(), 500);
+    const t3 = setTimeout(() => ScrollTrigger.refresh(), 1500);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+    };
+  }, [pathname]);
 
   return <>{children}</>;
 }
