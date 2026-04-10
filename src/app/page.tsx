@@ -12,7 +12,6 @@ export default function Home() {
     <>
       <HeroCarousel />
       <HeroSection />
-      <ScrollStorytelling />
       <AboutSection />
       <ProductGridSection />
       <PricingHighlightSection />
