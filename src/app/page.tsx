@@ -12,6 +12,9 @@ export default function Home() {
     <>
       <HeroCarousel />
       <HeroSection />
+       <div className="min-h-screen">
+        <ScrollStorytelling />
+      </div>
       <AboutSection />
       <ProductGridSection />
       <PricingHighlightSection />
