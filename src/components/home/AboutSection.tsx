@@ -47,7 +47,7 @@ export function AboutSection() {
   }, []);
 
   const benefits = [
-    "Warranty 7 Tahun",
+    "Lifetime Warranty",
     "Bunga 0% & Angsuran Ringan",
     "Free Service (Mobil Baru)",
     "Tukar Tambah (Trade-in)",
@@ -68,15 +68,15 @@ export function AboutSection() {
           <div ref={dealerInfoRef} className="lg:col-span-7 flex flex-col mt-10">
             <header className="dealer-reveal mb-10">
               <span className="text-[10px] font-black text-primary uppercase tracking-[0.4em] mb-4 block">
-                PT AVANTE EKSA MOBILINDO
+                CHERY WONDER PAJAJARAN
               </span>
               <h2 className="text-4xl md:text-7xl font-black text-foreground tracking-tighter uppercase leading-[0.9] mb-8">
-                Dealer Resmi <br /> <span className="text-primary">Chery Bogor</span>
+                Dealer Resmi <br /> <span className="text-gray-400">Chery Bogor</span>
               </h2>
               <div className="flex items-start gap-3 p-4 bg-foreground/[0.03] rounded-2xl border border-foreground/5 max-w-xl">
                 <MapPin className="w-5 h-5 text-primary shrink-0 mt-1" />
                 <p className="text-sm md:text-base font-medium text-foreground/70 leading-relaxed">
-                  Jl. Sholeh Iskandar No. 16, Tanah Sareal Bogor 16164. <br />
+                  Jl. Raya Pajajaran No.76, Baranangsiang, Kota Bogor, Jawa Barat 16143 <br />
                   <span className="text-xs opacity-50 font-bold uppercase tracking-widest mt-2 block">Pusat Layanan Terpadu Chery</span>
                 </p>
               </div>
@@ -87,7 +87,7 @@ export function AboutSection() {
                 Kami melayani penjualan mobil Chery secara Cash dan Kredit untuk semua tipe. Pengajuan kredit tersedia dengan DP rendah dan angsuran terjangkau. Kami juga membantu proses trade-in (tukar tambah) dengan penawaran terbaik untuk mobil lama Anda.
               </p>
               <p className="text-sm text-foreground/40 font-medium">
-                Dapatkan informasi harga terbaru Chery Omoda 5, Tiggo Cross, Tiggo 5x, Tiggo 7 Pro, Tiggo 8 Pro, dan Chery J6 di area Bogor dan sekitarnya.
+                Dapatkan informasi harga terbaru Chery QQ3 EV, Chery C5 CSH, Tiggo Cross CSH, Tiggo 8 CSH, Tiggo 9 CSH, Chery J6T dan Chery J6 di area Bogor dan sekitarnya.
               </p>
             </div>
 
@@ -113,7 +113,7 @@ export function AboutSection() {
 
               <div className="relative aspect-[4/5] rounded-[2.5rem] overflow-hidden mb-10 border-4 border-background luxury-shadow">
                 <Image
-                  src="/images/cars/chery-j6.png"
+                  src="/images/banners/noup.webp"
                   alt="Noufal Dzakir"
                   fill
                   className="object-cover transition-transform duration-1000 group-hover:scale-110"
@@ -123,7 +123,7 @@ export function AboutSection() {
 
               <div className="text-center">
                 <span className="text-[10px] font-black text-primary uppercase tracking-[0.5em] mb-4 block">
-                  Brand Expert
+                  Digital Marketing
                 </span>
                 <h3 className="text-3xl md:text-5xl font-black text-foreground tracking-tighter uppercase mb-6 leading-none">
                   DZAKIR

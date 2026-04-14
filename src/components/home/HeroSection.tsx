@@ -140,7 +140,7 @@ export function HeroSection() {
           <div className="hero-btns flex flex-wrap justify-center gap-6">
             <Button
               asChild
-              className="h-16 px-12 bg-primary text-white hover:bg-primary/90 rounded-none text-xs font-bold tracking-[0.2em] uppercase transition-all duration-500 luxury-shadow"
+              className="h-16 px-12 bg-gray-500 text-white hover:bg-primary/90 rounded-none text-xs font-bold tracking-[0.2em] uppercase transition-all duration-500 luxury-shadow"
             >
               <Link href="/model-mobil" className="flex items-center gap-2">
                 Explore Fleet <ChevronRight className="w-4 h-4" />

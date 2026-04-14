@@ -83,7 +83,7 @@ export function ScrollStorytelling() {
         scrollTrigger: {
           trigger: triggerRef.current,
           start: "top top",
-          end: "+=300%",
+          end: "+=200%",
           pin: true,
           scrub: 1,
           anticipatePin: 1,
@@ -103,17 +103,20 @@ export function ScrollStorytelling() {
         ease: "power2.inOut"
       }, 0);
 
+      // Wind Lines Fade In
+      pinTl.to(".speed-lines", { opacity: 1, duration: 1 }, 0);
+
       // 2. Feature Dot Reveals
       CORE_FEATURES.forEach((_, i) => {
         pinTl.fromTo(`.luxury-dot-${i}`,
           { scale: 0, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.5 },
-          `+=${i * 0.4}`
+          { scale: 1, opacity: 1, duration: 0.3 },
+          i === 0 ? "+=0.2" : "<0.15" // Faster gap between texts
         );
 
         pinTl.fromTo(`.luxury-text-${i}`,
           { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.6 },
+          { opacity: 1, y: 0, duration: 0.3 },
           "<"
         );
       });
@@ -127,6 +130,9 @@ export function ScrollStorytelling() {
         ease: "power2.inOut",
         display: "none"
       }, "+=1");
+
+      // Wind Lines Fade Out
+      pinTl.to(".speed-lines", { opacity: 0, duration: 1 }, "<");
 
       // 4. Selector UI Fade In (Centered Elements)
       pinTl.fromTo([".selector-ui-tabs", ".selector-ui-dropdown", ".selector-ui-footer"],
@@ -263,8 +269,40 @@ export function ScrollStorytelling() {
             </button>
           </div>
 
+          {/* Speed Lines / Wind Effect (BEHIND CAR) */}
+          <div className="speed-lines absolute inset-[-20%] md:inset-[-50%] z-0 pointer-events-none opacity-0 overflow-hidden">
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={`wind-white-${i}`}
+                className="absolute h-[1px] md:h-[2px] rounded-full bg-gradient-to-l from-transparent via-white to-transparent animate-wind"
+                style={{
+                  top: `${10 + (i * 10)}%`,
+                  left: "50%",
+                  width: `${30 + (i % 3) * 15}%`,
+                  opacity: 0.3 + (i % 3) * 0.2,
+                  animationDelay: `${(i % 4) * 0.25}s`,
+                  animationDuration: `${0.8 + (i % 3) * 0.3}s`,
+                }}
+              />
+            ))}
+            {[...Array(4)].map((_, i) => (
+              <div
+                key={`wind-primary-${i}`}
+                className="absolute h-[4px] md:h-[8px] blur-[2px] rounded-full bg-gradient-to-l from-transparent via-primary to-transparent animate-wind"
+                style={{
+                  top: `${20 + (i * 20)}%`,
+                  left: "50%",
+                  width: `${40 + (i % 2) * 20}%`,
+                  opacity: 0.15 + (i % 2) * 0.1,
+                  animationDelay: `${0.4 + (i % 3) * 0.3}s`,
+                  animationDuration: `${1.1 + (i % 2) * 0.4}s`,
+                }}
+              />
+            ))}
+          </div>
+
           {/* Car wrapper - GSAP targets this for scale animation */}
-          <div ref={carWrapperRef} className="relative w-full h-full">
+          <div ref={carWrapperRef} className="relative w-full h-full z-10">
 
             {/* Car Image - plain CSS, no Framer Motion inside GSAP-pinned area */}
             <div className="relative w-full h-full">
@@ -334,6 +372,16 @@ export function ScrollStorytelling() {
               --dy: var(--dmy);
             }
           }
+          
+          @keyframes wind-streak {
+            0% { transform: translateX(100vw); opacity: 0; }
+            5% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(-200vw); opacity: 0; }
+          }
+          .animate-wind {
+            animation: wind-streak linear infinite;
+          }
         `}</style>
 
         {/* 4. Details & Action (Part of Selector) */}
@@ -349,7 +397,7 @@ export function ScrollStorytelling() {
 
           <Button
             asChild
-            className="h-12 px-10 bg-primary text-white hover:bg-primary/90 rounded-none text-[9px] font-bold tracking-[0.4em] uppercase transition-all duration-500 luxury-shadow"
+            className="h-12 px-10 bg-gray-500 text-white hover:bg-primary/90 rounded-none text-[9px] font-bold tracking-[0.4em] uppercase transition-all duration-500 luxury-shadow"
           >
             <Link href={`/model-mobil/${currentCar.id}`} className="flex items-center gap-3">
               See Car Details <ArrowRight className="w-4 h-4" />

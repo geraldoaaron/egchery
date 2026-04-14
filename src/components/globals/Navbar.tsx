@@ -37,10 +37,10 @@ export function Navbar() {
           }
         });
       },
-      { 
+      {
         // Focus on the top part of the viewport
         rootMargin: "0px 0px -90% 0px",
-        threshold: 0 
+        threshold: 0
       }
     );
 
@@ -116,7 +116,7 @@ export function Navbar() {
             onMouseLeave={() => setIsModelsDropdownOpen(false)}
           >
             <button className={`flex items-center gap-1 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors py-4 ${isModelsDropdownOpen ? "text-primary" : (isLightMode ? "text-foreground/60 hover:text-primary" : "text-white/90 hover:text-white")}`}>
-              Fleet <ChevronDown className={`w-3 h-3 transition-transform duration-500 ${isModelsDropdownOpen ? "rotate-180" : ""}`} />
+              Models <ChevronDown className={`w-3 h-3 transition-transform duration-500 ${isModelsDropdownOpen ? "rotate-180" : ""}`} />
             </button>
 
             <AnimatePresence>
@@ -167,7 +167,7 @@ export function Navbar() {
                             onClick={() => setIsModelsDropdownOpen(false)}
                             className="flex flex-col items-center w-[220px] group"
                           >
-                            <div className="relative w-full aspect-[16/10] mb-6 grayscale group-hover:grayscale-0 transition-all duration-700">
+                            <div className="relative w-full aspect-[16/10] mb-6 transition-all duration-700">
                               <Image
                                 src={car.image}
                                 alt={car.name}
@@ -199,7 +199,7 @@ export function Navbar() {
             href="/harga"
             className={`text-[10px] font-bold tracking-[0.2em] uppercase transition-colors ${isLightMode ? "text-foreground/60 hover:text-primary" : "text-white/90 hover:text-white"}`}
           >
-            Pricing
+            Price list
           </Link>
           <Link
             href="/info-promo"
@@ -220,7 +220,7 @@ export function Navbar() {
           <button className={`transition-colors ${isLightMode ? "text-foreground/40 hover:text-foreground" : "text-white/40 hover:text-white"}`}>
             <Search className="w-4 h-4" />
           </button>
-          <Button asChild className="rounded-none h-11 px-8 text-[10px] font-bold tracking-[0.2em] bg-primary text-white hover:bg-primary/90 transition-all duration-500 luxury-shadow">
+          <Button asChild className="rounded-none h-11 px-8 text-[10px] font-bold tracking-[0.2em] bg-gray-500 text-white hover:bg-primary/90 transition-all duration-500 luxury-shadow">
             <Link href="/hubungi-kami">DRIVE NOW</Link>
           </Button>
         </div>

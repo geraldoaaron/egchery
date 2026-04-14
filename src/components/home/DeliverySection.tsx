@@ -55,28 +55,41 @@ export function DeliverySection() {
   // Triple the set to ensure massive headroom for dragging
   const tripledImages = [...galleryImages, ...galleryImages, ...galleryImages];
 
+  const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
-    if (containerRef.current) {
-      // We only care about the width of ONE set
-      setBaseWidth(containerRef.current.scrollWidth / 3);
-    }
+    if (!containerRef.current) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const width = entry.target.scrollWidth;
+        if (width > 0) {
+          setBaseWidth(width / 3);
+        }
+      }
+    });
+
+    resizeObserver.observe(containerRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    };
   }, []);
 
   // Auto-scroll loop
   useAnimationFrame((t, delta) => {
     if (isPaused || !baseWidth) return;
-
-    // Slow 'Tenang' movement: ~30px per second
+    
+    // Smooth deterministic movement
     const moveBy = (delta / 1000) * -30;
     let newX = x.get() + moveBy;
 
-    // Boundary check for infinite loop
+    // Robust wrapping: keep x within [-baseWidth, 0]
     if (newX <= -baseWidth) {
-      newX = 0;
-    } else if (newX >= 0) {
-      newX = -baseWidth;
+      newX += baseWidth;
     }
-
+    
     x.set(newX);
   });
 
@@ -128,10 +141,12 @@ export function DeliverySection() {
             ref={containerRef}
             drag="x"
             style={{ x }}
-            onDragStart={() => setIsPaused(true)}
+            onDragStart={() => {
+              setIsPaused(true);
+              if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+            }}
             onDragEnd={() => {
-              // Smoothly wait before resuming
-              setTimeout(() => setIsPaused(false), 2000);
+              resumeTimeoutRef.current = setTimeout(() => setIsPaused(false), 2000);
             }}
             // Constraint check: Reset position if dragged too far
             onUpdate={(latest: any) => {

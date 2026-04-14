@@ -36,7 +36,7 @@ Pesan: ${formData.message}`;
   return (
     <div data-nav-theme="light" className="pt-32 pb-24 min-h-screen bg-background">
       <div className="container mx-auto px-4 md:px-8 max-w-6xl">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-16"
@@ -65,7 +65,7 @@ Pesan: ${formData.message}`;
                   </div>
                   <div>
                     <h4 className="text-black font-medium mb-1">Alamat</h4>
-                    <p className="text-gray-600 text-sm">Jl. Raya Pajajaran No.9, Baranangsiang, Kec. Bogor Tim., Kota Bogor, Jawa Barat 16143</p>
+                    <p className="text-gray-600 text-sm">Jl. Raya Pajajaran No.76, RT.01/RW.11, Baranangsiang, Kec. Bogor Tim., Kota Bogor, Jawa Barat 16143</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
@@ -74,7 +74,7 @@ Pesan: ${formData.message}`;
                   </div>
                   <div>
                     <h4 className="text-black font-medium mb-1">Telepon & WhatsApp</h4>
-                    <p className="text-gray-600 text-sm">+62 812-3456-7890</p>
+                    <p className="text-gray-600 text-sm">+62 851-5971-6616</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
@@ -83,7 +83,7 @@ Pesan: ${formData.message}`;
                   </div>
                   <div>
                     <h4 className="text-black font-medium mb-1">Email</h4>
-                    <p className="text-gray-600 text-sm">sales@chery-wonder.com</p>
+                    <p className="text-gray-600 text-sm">assetscherypajajaran@gmail.com</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
@@ -92,7 +92,7 @@ Pesan: ${formData.message}`;
                   </div>
                   <div>
                     <h4 className="text-black font-medium mb-1">Jam Operasional</h4>
-                    <p className="text-gray-600 text-sm">Senin - Minggu: 08.00 - 17.00 WIB</p>
+                    <p className="text-gray-600 text-sm">Senin - Minggu: 08.30 - 19.00 WIB</p>
                   </div>
                 </div>
               </div>
@@ -100,13 +100,13 @@ Pesan: ${formData.message}`;
 
             {/* Google Map Box */}
             <div className="rounded-2xl overflow-hidden border border-black/10 h-[300px] bg-black/5">
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126830.41846387814!2d106.7262!3d-6.595038!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69c5e317056bfb%3A0x9d54e612f0e0dfb!2sBogor%2C%20Bogor%20City%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid" 
-                width="100%" 
-                height="100%" 
-                style={{ border: 0 }} 
-                allowFullScreen={false} 
-                loading="lazy" 
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126830.41846387814!2d106.7262!3d-6.595038!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69c5e317056bfb%3A0x9d54e612f0e0dfb!2sBogor%2C%20Bogor%20City%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen={false}
+                loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               ></iframe>
             </div>
@@ -121,30 +121,30 @@ Pesan: ${formData.message}`;
             <div className="bg-black/5 border border-black/10 p-8 md:p-10 rounded-2xl relative overflow-hidden">
               {/* Decorative line */}
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent" />
-              
+
               <h3 className="text-2xl font-bold text-black mb-2">Pesan Sekarang</h3>
               <p className="text-gray-600 text-sm mb-8">Isi form di bawah ini dan kami akan segera mengarahkan Anda ke spesialis sales kami melalui WhatsApp.</p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap *</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     required
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full bg-black/5 border border-black/10 rounded-lg px-4 py-3 text-black focus:outline-none focus:border-primary transition-colors"
                     placeholder="Masukkan nama"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon / WA *</label>
-                  <input 
-                    type="tel" 
+                  <input
+                    type="tel"
                     required
                     value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full bg-black/5 border border-black/10 rounded-lg px-4 py-3 text-black focus:outline-none focus:border-primary transition-colors"
                     placeholder="0812xxxxxx"
                   />
@@ -152,9 +152,9 @@ Pesan: ${formData.message}`;
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Layanan yang Diinginkan</label>
-                  <select 
+                  <select
                     value={formData.service}
-                    onChange={(e) => setFormData({...formData, service: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                     className="w-full bg-black/5 border border-black/10 rounded-lg px-4 py-3 text-black focus:outline-none focus:border-primary transition-colors appearance-none"
                   >
                     <option value="Test Drive">Test Drive</option>
@@ -166,10 +166,10 @@ Pesan: ${formData.message}`;
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Pesan Tambahan</label>
-                  <textarea 
+                  <textarea
                     rows={4}
                     value={formData.message}
-                    onChange={(e) => setFormData({...formData, message: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     className="w-full bg-black/5 border border-black/10 rounded-lg px-4 py-3 text-black focus:outline-none focus:border-primary transition-colors"
                     placeholder="Sampaikan pertanyaan atau kebutuhan Anda..."
                   ></textarea>
