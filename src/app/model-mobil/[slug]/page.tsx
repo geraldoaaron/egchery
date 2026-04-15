@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, CheckCircle2, ChevronRight } from "lucide-react";
 import { CarColorPicker } from "@/components/cars/CarColorPicker";
 import { FeatureSlider } from "@/components/cars/FeatureSlider";
+import { ExperienceSlider } from "@/components/cars/ExperienceSlider";
+import { ColorOptionsSection } from "@/components/cars/ColorOptionsSection";
+import { SafetyAccordionSection } from "@/components/cars/SafetyAccordionSection";
 
 // For static generation if needed
 export function generateStaticParams() {
@@ -237,6 +240,33 @@ export default async function ModelDetailPage(props: { params: Promise<{ slug: s
           featureSubtitle={car.featureSubtitle}
         />
       )}
+
+      {/* SUPER EXPERIENCE — Coverflow Slider */}
+      {car.experienceSlides && car.experienceSlides.length > 0 && (
+        <ExperienceSlider
+          title={car.experienceTitle}
+          subtitle={car.experienceSubtitle}
+          slides={car.experienceSlides}
+          bgColor="bg-gray-50"
+        />
+      )}
+
+      {/* DYNAMICS AND SAFETY — Accordion with image */}
+      {car.safetyFeatures && car.safetyFeatures.items.length > 0 && (
+        <SafetyAccordionSection
+          carName={car.name}
+          sectionTitle={car.safetyFeatures.sectionTitle}
+          sectionSubtitle={car.safetyFeatures.sectionSubtitle}
+          items={car.safetyFeatures.items}
+        />
+      )}
+
+      {/* COLOR OPTIONS — Interactive color picker section */}
+      <ColorOptionsSection
+        carName={car.name}
+        colors={car.colors || []}
+        defaultImage={car.image}
+      />
     </div>
   );
 }
