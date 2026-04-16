@@ -16,6 +16,17 @@ export interface FeatureSliderSection {
   groups: FeatureGroup[];
 }
 
+export interface ColorOption {
+  name: string;
+  hex: string;
+  image: string;
+}
+
+export interface ColorGroup {
+  name: string;
+  colors: ColorOption[];
+}
+
 export interface Car {
   id: string;
   name: string;
@@ -41,13 +52,15 @@ export interface Car {
     power?: string;
     torque?: string;
   };
-  variants?: { name: string; price: string }[];
-  colors?: { name: string; hex: string; image: string }[];
+  variants?: { name: string; price: string; image?: string }[];
+  colors?: ColorOption[];
+  colorGroups?: ColorGroup[];
   featureTitle?: string;
   featureSubtitle?: string;
   featureGroups?: FeatureGroup[];
   featureSliders?: FeatureSliderSection[]; // Multiple independent slider sections
   experienceSlides?: { title: string; image: string }[]; // Super Experience coverflow slider
+  experienceGroups?: FeatureGroup[];
   experienceTitle?: string;
   experienceSubtitle?: string;
   safetyFeatures?: {
@@ -433,6 +446,149 @@ export const cars: Car[] = [
     ],
   },
   {
+    id: "j6",
+    name: "Chery J6",
+    category: "J6",
+    powertrain: "BEV",
+    image: "/images/cars/bev/J6.png",
+    price: "Hubungi Kami",
+    tagline: "Elegant & Futuristic",
+    dimensions: {
+      engine: "BEV", engineType: "CSH",
+      length: "4406", lengthUnit: "MM",
+      wheelbase: "2715", wheelbaseUnit: "MM"
+    },
+    performance: {
+      acceleration: "6.5 Sec",
+      topSpeed: "150 Km/h",
+      power: "184 HP",
+      torque: "285 Nm"
+    },
+    specs: ["Desain Tiga Ruang Proporsional", "Interior Minimalis namun Mewah"],
+    colors: [
+      { name: "White Howlite", hex: "#f5f5f5", image: "/images/cars/bev/j6/coloroptions/910x445 J6 White Howlite.webp" },
+      { name: "Green Emerald", hex: "#2E8664", image: "/images/cars/bev/j6/coloroptions/910x445 J6 Green Emerald.webp" },
+      { name: "Grey Morganite", hex: "#4a4a4a", image: "/images/cars/bev/j6/coloroptions/910x445 J6 Grey Morganite.webp" },
+      { name: "Black Platinum", hex: "#1a1a1a", image: "/images/cars/bev/j6/coloroptions/910x445 J6 Black Platinum.webp" },
+    ],
+    variants: [
+      { name: "J6 Phantom RWD", price: "Hubungi Kami", image: "/images/cars/bev/j6/j6 variants/520x275-J6-Phantom-RWD.png" },
+      { name: "J6 Phantom IWD", price: "Hubungi Kami", image: "/images/cars/bev/j6/j6 variants/520x275-J6-Phantom-IWD.png" },
+      { name: "J6 RWD", price: "Hubungi Kami", image: "/images/cars/bev/j6/j6 variants/j6-rwd.webp" },
+      { name: "J6 IWD", price: "Hubungi Kami", image: "/images/cars/bev/j6/j6 variants/j6-iwd.webp" },
+      { name: "J6T RWD", price: "Hubungi Kami", image: "/images/cars/bev/j6/j6 variants/j6t-rwd.png" },
+      { name: "J6T IWD", price: "Hubungi Kami", image: "/images/cars/bev/j6/j6 variants/j6t-iwd.png" },
+    ],
+    featureTitle: "EMBRACE A NEW DIMENSION OF ELEGANCE",
+    featureSubtitle: "Setiap sudut dirancang dengan presisi, memadukan estetika futuristik dengan kenyamanan berkendara yang tak tertandingi.",
+    featureGroups: [
+      {
+        name: "J6",
+        slides: [
+          { title: "540 Transparent Chassis", image: "/images/cars/bev/j6/slider1/540-Transparent-Chassis.webp" },
+          { title: "High Mount Stop Lamp", image: "/images/cars/bev/j6/slider1/High Mount Stop Lamp.webp" },
+          { title: "LED Prism Headlamp", image: "/images/cars/bev/j6/slider1/LED-Prism-Headlamp-new.webp" },
+          { title: "Matrix Vision Rear Lamp", image: "/images/cars/bev/j6/slider1/Matrix Vision Rear Lamp.webp" },
+          { title: "Matrix Box Storage", image: "/images/cars/bev/j6/slider1/Matrix-Box-Storage-new.webp" },
+          { title: "Two-tone 19 Inch Velg", image: "/images/cars/bev/j6/slider1/Two-tone 19 Inch Velg.webp" },
+        ]
+      },
+      {
+        name: "J6T",
+        slides: [
+          { title: "Brand New Design", image: "/images/cars/bev/j6t/slider1/brand-new-design.jpg" },
+          { title: "Ground Clearance 225mm", image: "/images/cars/bev/j6t/slider1/ground-clearance-225mm.jpg" },
+          { title: "New Aero Vent", image: "/images/cars/bev/j6t/slider1/new-aero-vent.jpg" },
+          { title: "New Fog Lamp", image: "/images/cars/bev/j6t/slider1/new-fog-lamp.jpg" },
+          { title: "New Rear Bumper", image: "/images/cars/bev/j6t/slider1/new-rear-bumper.jpg" },
+          { title: "New Shape Box", image: "/images/cars/bev/j6t/slider1/new-shape-box.jpg" },
+          { title: "Water Wading Depth 625mm", image: "/images/cars/bev/j6t/slider1/water-wading-depth-625mm.jpg" },
+        ]
+      }
+    ],
+    experienceTitle: "SUPER EXPERIENCE",
+    experienceSubtitle: "Chery J6 menghadirkan ruang kabin yang elegan dan futuristik — setiap material dipilih dengan presisi untuk memanjakan semua penumpang.",
+    experienceGroups: [
+      {
+        name: "J6",
+        slides: [
+          { title: "AC Dual Zone", image: "/images/cars/bev/j6/sliderexperience/AC Dual Zone.webp" },
+          { title: "AC Second Row", image: "/images/cars/bev/j6/sliderexperience/AC Second Row.webp" },
+          { title: "Dual Color Seats", image: "/images/cars/bev/j6/sliderexperience/Dual Color Seats.webp" },
+          { title: "Multi Function Steering Wheel", image: "/images/cars/bev/j6/sliderexperience/Multi Fuction Steering Wheel.webp" },
+          { title: "One-Push Thumb Open Door", image: "/images/cars/bev/j6/sliderexperience/One-Push Thumb Open Door.webp" },
+          { title: "Panoramic Sunroof", image: "/images/cars/bev/j6/sliderexperience/Panoramic Sunroof.webp" },
+          { title: "Speakers", image: "/images/cars/bev/j6/sliderexperience/Speakers.webp" },
+        ]
+      },
+      {
+        name: "J6T",
+        slides: [
+          { title: "Additional Features Journey Navigation", image: "/images/cars/bev/j6t/sliderexperience/additional-features-journey-navigation.jpg" },
+          { title: "Brand New Sunvisor", image: "/images/cars/bev/j6t/sliderexperience/brand-new-sunvisor.jpg" },
+          { title: "Front Armrest with Cooling System", image: "/images/cars/bev/j6t/sliderexperience/front-armrest-with-cooling-system.jpg" },
+          { title: "New Integrated Head Rest", image: "/images/cars/bev/j6t/sliderexperience/new-integrated-head-rest.jpg" },
+        ]
+      }
+    ],
+    colorGroups: [
+      {
+        name: "J6",
+        colors: [
+          { name: "White Howlite", hex: "#f5f5f5", image: "/images/cars/bev/j6/coloroptions/910x445 J6 White Howlite.webp" },
+          { name: "Green Emerald", hex: "#2E8664", image: "/images/cars/bev/j6/coloroptions/910x445 J6 Green Emerald.webp" },
+          { name: "Grey Morganite", hex: "#4a4a4a", image: "/images/cars/bev/j6/coloroptions/910x445 J6 Grey Morganite.webp" },
+          { name: "Black Platinum", hex: "#1a1a1a", image: "/images/cars/bev/j6/coloroptions/910x445 J6 Black Platinum.webp" },
+        ]
+      },
+      {
+        name: "J6T",
+        colors: [
+          { name: "White Howlite", hex: "#f5f5f5", image: "/images/cars/bev/j6t/coloroptions/white-howlite-car.png" },
+          { name: "Red Ruby", hex: "#cc0000", image: "/images/cars/bev/j6t/coloroptions/red-ruby-car.png" },
+          { name: "Grey Morganite", hex: "#4a4a4a", image: "/images/cars/bev/j6t/coloroptions/grey-morganite-car.png" },
+          { name: "Black Platinum", hex: "#1a1a1a", image: "/images/cars/bev/j6t/coloroptions/black-platinum-car.png" },
+        ]
+      }
+    ],
+    safetyFeatures: {
+      sectionTitle: "DYNAMICS AND SAFETY",
+      sectionSubtitle: "Chery J6 dilengkapi dengan teknologi keamanan pintar yang menjaga Anda tetap aman dalam petualangan off-road maupun di jalanan kota.",
+      items: [
+        {
+          title: "Airbags",
+          description: "Sistem perlindungan kantong udara menyeluruh untuk menjamin keselamatan maksimal bagi seluruh penumpang.",
+          image: "/images/cars/bev/j6/slidersafety/Airbags.webp"
+        },
+        {
+          title: "Battery Safety",
+          description: "Teknologi proteksi baterai tingkat tinggi yang tahan benturan dan kedap air (IP68) untuk performa yang aman.",
+          image: "/images/cars/bev/j6/slidersafety/Battery Safety.webp"
+        },
+        {
+          title: "Chassis Drive",
+          description: "Konstruksi sasis tangguh yang dirancang untuk stabilitas luar biasa di berbagai medan jalan.",
+          image: "/images/cars/bev/j6/slidersafety/Chassis Drive.webp"
+        },
+        {
+          title: "Frame Safety",
+          description: "Rangka baja berkekuatan tinggi yang memberikan zona proteksi maksimal saat terjadi benturan.",
+          image: "/images/cars/bev/j6/slidersafety/Frame.webp"
+        },
+        {
+          title: "H-arm Multi-link Suspension",
+          description: "Sistem suspensi canggih yang meredam getaran dengan sempurna, memberikan kenyamanan berkendara kelas satu.",
+          image: "/images/cars/bev/j6/slidersafety/H-arm Multi link b.webp"
+        },
+        {
+          title: "35 Storage Spaces",
+          description: "Ruang penyimpanan cerdas di seluruh kabin yang memaksimalkan utilitas dan kerapian barang bawaan Anda.",
+          image: "/images/cars/bev/j6/slidersafety/Multi Dimensional Rubik Cube (35 Storage Space).webp"
+        },
+      ],
+    },
+  },
+  {
     id: "chery-e5",
     name: "Chery E5",
     category: "Chery",
@@ -510,68 +666,4 @@ export const cars: Car[] = [
       ],
     },
   },
-
-  {
-    id: "j6",
-    name: "Chery J6",
-    category: "J6",
-    powertrain: "BEV",
-    image: "/images/cars/bev/J6.png",
-    price: "Hubungi Kami",
-    tagline: "Elegant & Futuristic",
-    dimensions: {
-      engine: "BEV", engineType: "CSH",
-      length: "4406", lengthUnit: "MM",
-      wheelbase: "2715", wheelbaseUnit: "MM"
-    },
-    performance: {
-      acceleration: "6.5 Sec",
-      topSpeed: "150 Km/h",
-      power: "184 HP",
-      torque: "285 Nm"
-    },
-    specs: ["Desain Tiga Ruang Proporsional", "Interior Minimalis namun Mewah"],
-    colors: [
-      { name: "Pearl White", hex: "#f5f5f5", image: "/images/cars/bev/J6.png" },
-      { name: "Sky Blue", hex: "#2E86AB", image: "/images/cars/bev/J6.png" },
-      { name: "Graphite Gray", hex: "#4a4a4a", image: "/images/cars/bev/J6.png" },
-      { name: "Midnight Black", hex: "#1a1a1a", image: "/images/cars/bev/J6.png" },
-    ],
-    featureTitle: "EMBRACE A NEW DIMENSION OF ELEGANCE",
-    featureSubtitle: "Setiap sudut dirancang dengan presisi, memadukan estetika futuristik dengan kenyamanan berkendara yang tak tertandingi.",
-    featureGroups: [
-      {
-        name: "J6",
-        slides: [
-          { title: "540 Transparent Chassis", image: "/images/cars/bev/j6/slider1/540-Transparent-Chassis.webp" },
-          { title: "High Mount Stop Lamp", image: "/images/cars/bev/j6/slider1/High Mount Stop Lamp.webp" },
-          { title: "LED Prism Headlamp", image: "/images/cars/bev/j6/slider1/LED-Prism-Headlamp-new.webp" },
-          { title: "Matrix Vision Rear Lamp", image: "/images/cars/bev/j6/slider1/Matrix Vision Rear Lamp.webp" },
-          { title: "Matrix Box Storage", image: "/images/cars/bev/j6/slider1/Matrix-Box-Storage-new.webp" },
-          { title: "Two-tone 19 Inch Velg", image: "/images/cars/bev/j6/slider1/Two-tone 19 Inch Velg.webp" },
-        ]
-      },
-      {
-        name: "J6T",
-        slides: [
-          { title: "Brand New Design", image: "/images/cars/bev/j6t/slider1/brand-new-design.jpg" },
-          { title: "Ground Clearance 225mm", image: "/images/cars/bev/j6t/slider1/ground-clearance-225mm.jpg" },
-          { title: "New Aero Vent", image: "/images/cars/bev/j6t/slider1/new-aero-vent.jpg" },
-          { title: "New Fog Lamp", image: "/images/cars/bev/j6t/slider1/new-fog-lamp.jpg" },
-          { title: "New Rear Bumper", image: "/images/cars/bev/j6t/slider1/new-rear-bumper.jpg" },
-          { title: "New Shape Box", image: "/images/cars/bev/j6t/slider1/new-shape-box.jpg" },
-          { title: "Water Wading Depth 625mm", image: "/images/cars/bev/j6t/slider1/water-wading-depth-625mm.jpg" },
-        ]
-      }
-    ],
-    experienceTitle: "SUPER EXPERIENCE",
-    experienceSubtitle: "Chery J6 menghadirkan ruang kabin yang elegan dan futuristik — setiap material dipilih dengan presisi untuk memanjakan semua penumpang.",
-    experienceSlides: [
-      { title: "540 Transparent Chassis", image: "/images/cars/bev/j6/slider1/540-Transparent-Chassis.webp" },
-      { title: "LED Prism Headlamp", image: "/images/cars/bev/j6/slider1/LED-Prism-Headlamp-new.webp" },
-      { title: "Matrix Vision Rear Lamp", image: "/images/cars/bev/j6/slider1/Matrix Vision Rear Lamp.webp" },
-      { title: "Matrix Box Storage", image: "/images/cars/bev/j6/slider1/Matrix-Box-Storage-new.webp" },
-      { title: "Two-tone 19 Inch Velg", image: "/images/cars/bev/j6/slider1/Two-tone 19 Inch Velg.webp" },
-    ],
-  }
 ];

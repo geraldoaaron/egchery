@@ -1,23 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface ColorOption {
-  name: string;
-  hex: string;
-  image: string;
-}
+import { ColorOption, ColorGroup } from "@/data/cars";
+import { Check, ChevronDown } from "lucide-react";
 
 interface ColorOptionsSectionProps {
   carName: string;
-  colors: ColorOption[];
+  colors?: ColorOption[];
+  colorGroups?: ColorGroup[];
   defaultImage: string;
 }
 
-// Simple steering wheel SVG
+// Custom steering wheel SVG icon
 function SteeringWheelIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -30,11 +27,35 @@ function SteeringWheelIcon() {
   );
 }
 
-export function ColorOptionsSection({ carName, colors, defaultImage }: ColorOptionsSectionProps) {
-  const allColors = colors.length > 0 ? colors : [
-    { name: "Standard", hex: "#cccccc", image: defaultImage }
-  ];
-  const [active, setActive] = useState(allColors[0]);
+export function ColorOptionsSection({ carName, colors: initialColors, colorGroups, defaultImage }: ColorOptionsSectionProps) {
+  const [activeTabIdx, setActiveTabIdx] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  // Determine which groups and colors to use
+  const groupsToUse = colorGroups && colorGroups.length > 0 ? colorGroups : null;
+  const hasMultipleGroups = groupsToUse && groupsToUse.length > 1;
+  const currentColors = groupsToUse ? groupsToUse[activeTabIdx].colors : (initialColors || []);
+  
+  const [active, setActive] = useState(currentColors[0] || { name: "Standard", hex: "#cccccc", image: defaultImage });
+
+  // Sync active color when tab changes
+  useEffect(() => {
+    if (currentColors.length > 0) {
+      setActive(currentColors[0]);
+    }
+  }, [activeTabIdx, currentColors]);
+
+  // Handle clicks outside dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const currentImage = active.image || defaultImage;
 
@@ -50,6 +71,7 @@ export function ColorOptionsSection({ carName, colors, defaultImage }: ColorOpti
   return (
     <section className="py-16 md:py-24 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12">
+        
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-0">
 
           {/* ── LEFT: Text & Controls ── */}
@@ -57,13 +79,62 @@ export function ColorOptionsSection({ carName, colors, defaultImage }: ColorOpti
             <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight text-black mb-3">
               COLOR OPTIONS
             </h2>
-            <p className="text-gray-500 text-sm md:text-base leading-relaxed mb-8 max-w-xs">
-              Explore your style with {carName}. From vibrant red to elegant black, choose a hue that reflects your personality.
+            <p className="text-gray-500 text-sm md:text-base leading-relaxed mb-6 max-w-xs">
+              Explore your style with {groupsToUse ? groupsToUse[activeTabIdx].name : carName}. Choose a hue that reflects your personality.
             </p>
+
+            {/* Model Selector Tool — Custom Dropdown (Moved here) */}
+            <div className="mb-10 relative z-50 group/select max-w-xs">
+              <p className="text-[10px] font-black tracking-[0.3em] uppercase text-gray-400 mb-3 ml-0.5">Select Specification</p>
+              
+              {hasMultipleGroups ? (
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="flex items-center justify-between gap-6 px-6 py-3.5 bg-white border border-gray-200 rounded-none shadow-sm hover:border-primary transition-all w-full"
+                  >
+                    <span className="text-sm font-black uppercase tracking-widest text-black">
+                      {groupsToUse[activeTabIdx].name}
+                    </span>
+                    <ChevronDown className={`w-4 h-4 text-primary transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {isDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 shadow-2xl z-50"
+                      >
+                        {groupsToUse.map((group, idx) => (
+                          <button
+                            key={group.name}
+                            onClick={() => {
+                              setActiveTabIdx(idx);
+                              setIsDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-6 py-3.5 text-xs font-bold uppercase tracking-widest transition-colors hover:bg-gray-50 ${
+                              activeTabIdx === idx ? "text-primary bg-gray-50/50" : "text-gray-500"
+                            }`}
+                          >
+                            {group.name}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <div className="px-6 py-3.5 bg-gray-100/50 border border-gray-200 text-xs font-black uppercase tracking-widest text-black w-full">
+                  {carName}
+                </div>
+              )}
+            </div>
 
             {/* Color Swatches */}
             <div className="flex items-center gap-3 mb-4 flex-wrap">
-              {allColors.map((c) => {
+              {currentColors.map((c) => {
                 const selected = active.name === c.name;
                 const light = isLight(c.hex);
                 return (
@@ -91,15 +162,25 @@ export function ColorOptionsSection({ carName, colors, defaultImage }: ColorOpti
               {active.name}
             </p>
 
-            {/* Test Drive CTA */}
-            <Link
-              href="/hubungi-kami"
-              className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full text-white text-sm font-semibold tracking-wider transition-all hover:scale-105 hover:shadow-lg"
-              style={{ background: "linear-gradient(135deg, #B8964E, #C8A560, #A07838)" }}
-            >
-              <SteeringWheelIcon />
-              Test Drive
-            </Link>
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap gap-4">
+              <Link
+                href="/hubungi-kami"
+                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full text-white text-sm font-semibold tracking-wider transition-all hover:scale-105 hover:shadow-lg"
+                style={{ background: "linear-gradient(135deg, #B8964E, #C8A560, #A07838)" }}
+              >
+                <SteeringWheelIcon />
+                Test Drive
+              </Link>
+              
+              <Link
+                href={`/hubungi-kami?model=${groupsToUse ? groupsToUse[activeTabIdx].name : carName}&color=${active.name}`}
+                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-black text-white text-sm font-semibold tracking-wider transition-all hover:scale-105 hover:shadow-lg"
+              >
+                <Check className="w-5 h-5" />
+                Select Product
+              </Link>
+            </div>
           </div>
 
           {/* ── RIGHT: Car + Background Card ── */}
@@ -107,7 +188,7 @@ export function ColorOptionsSection({ carName, colors, defaultImage }: ColorOpti
 
             {/* Sky / Mountain background card */}
             <div
-              className="absolute rounded-3xl overflow-hidden"
+              className="absolute rounded-3xl overflow-hidden shadow-xl"
               style={{
                 top: "5%",
                 right: 0,
@@ -130,7 +211,7 @@ export function ColorOptionsSection({ carName, colors, defaultImage }: ColorOpti
             {/* Car image — overflows the background card left and bottom */}
             <AnimatePresence mode="wait">
               <motion.div
-                key={currentImage}
+                key={`${currentImage}-${activeTabIdx}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}

@@ -9,6 +9,8 @@ import { FeatureSlider } from "@/components/cars/FeatureSlider";
 import { ExperienceSlider } from "@/components/cars/ExperienceSlider";
 import { ColorOptionsSection } from "@/components/cars/ColorOptionsSection";
 import { SafetyAccordionSection } from "@/components/cars/SafetyAccordionSection";
+import { VariantPricingSection } from "@/components/cars/VariantPricingSection";
+import { OtherProductsSection } from "@/components/cars/OtherProductsSection";
 
 // For static generation if needed
 export function generateStaticParams() {
@@ -182,39 +184,6 @@ export default async function ModelDetailPage(props: { params: Promise<{ slug: s
         </div>
       </section>
 
-      {/* Pricing / Variants Table */}
-      {car.variants && car.variants.length > 0 && (
-        <section className="py-20 bg-gray-50 border-y border-black/5">
-          <div className="container mx-auto px-4 md:px-8">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold uppercase tracking-tight mb-8 text-black text-center">
-                Varian & <span className="text-primary">Harga</span>
-              </h2>
-              <div className="bg-black/5 rounded-2xl overflow-hidden border border-black/10">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-black/5">
-                      <th className="p-5 font-medium text-gray-600 border-b border-black/10 w-2/3">Type Varian</th>
-                      <th className="p-5 font-medium text-gray-600 border-b border-black/10 text-right">Harga OTR</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {car.variants.map((v, idx) => (
-                      <tr key={idx} className="transition-colors hover:bg-black/5">
-                        <td className="p-5 font-bold text-black border-b border-black/5">{v.name}</td>
-                        <td className="p-5 font-bold text-primary border-b border-black/5 text-right">{v.price}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="text-xs text-gray-500 mt-4 text-center">
-                *Harga berstatus On The Road (OTR) dan tidak mengikat, dapat berubah sewaktu-waktu.
-              </p>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Feature Slider Gallery Section(s) */}
       {car.featureSliders && car.featureSliders.length > 0 ? (
@@ -242,11 +211,12 @@ export default async function ModelDetailPage(props: { params: Promise<{ slug: s
       )}
 
       {/* SUPER EXPERIENCE — Coverflow Slider */}
-      {car.experienceSlides && car.experienceSlides.length > 0 && (
+      {(car.experienceSlides || car.experienceGroups) && (
         <ExperienceSlider
           title={car.experienceTitle}
           subtitle={car.experienceSubtitle}
           slides={car.experienceSlides}
+          experienceGroups={car.experienceGroups}
           bgColor="bg-gray-50"
         />
       )}
@@ -265,7 +235,29 @@ export default async function ModelDetailPage(props: { params: Promise<{ slug: s
       <ColorOptionsSection
         carName={car.name}
         colors={car.colors || []}
+        colorGroups={car.colorGroups}
         defaultImage={car.image}
+      />
+
+      {/* VARIANT PRICING — Price info with city/dealer picker & CTAs */}
+      <VariantPricingSection
+        carName={car.name}
+        carImage={car.image}
+        price={car.price}
+        highlightSpecs={car.specs}
+        variants={car.variants}
+      />
+
+      {/* OTHER PRODUCTS — Show other Chery models */}
+      <OtherProductsSection
+        currentCarId={car.id}
+        cars={cars.map((c) => ({
+          id: c.id,
+          name: c.name,
+          image: c.image,
+          price: c.price,
+          specs: c.specs,
+        }))}
       />
     </div>
   );

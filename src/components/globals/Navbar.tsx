@@ -16,7 +16,7 @@ export function Navbar() {
   const pathname = usePathname();
   const [navbarTheme, setNavbarTheme] = useState<"dark" | "light">("dark");
 
-  const [selectedPowertrain, setSelectedPowertrain] = useState<"BEV" | "CSH" | "ICE">("CSH");
+  const [selectedPowertrain, setSelectedPowertrain] = useState<"BEV" | "CSH" | "ICE">("BEV");
 
   // Update theme based on pathname and scroll
   useEffect(() => {
