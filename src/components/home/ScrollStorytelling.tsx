@@ -19,7 +19,7 @@ const CORE_FEATURES = [
     title: "INTELLIGENT CABIN",
     desc: "A curved 24.6-inch dual screen powered by the Qualcomm Snapdragon 8155, creating a seamless digital cockpit.",
     position: {
-      desktop: { top: "18%", left: "8%", dotX: "30px", dotY: "0px" },
+      desktop: { top: "10%", left: "0%", dotX: "30px", dotY: "0px" },
       mobile: { top: "5%", left: "5%", dotX: "30px", dotY: "0px" }
     },
   },
@@ -28,7 +28,7 @@ const CORE_FEATURES = [
     title: "SOPHISTICATED COMFORT",
     desc: "Premium Nappa leather seating with 6-way power adjustment and integrated ventilation systems.",
     position: {
-      desktop: { top: "70%", left: "85%", dotX: "0px", dotY: "0px" },
+      desktop: { top: "75%", left: "75%", dotX: "-10px", dotY: "-10px" },
       mobile: { top: "78%", left: "45%", dotX: "0px", dotY: "0px" }
     },
   },
@@ -37,7 +37,7 @@ const CORE_FEATURES = [
     title: "PURE ELECTRIC DRIVE",
     desc: "Eco-conscious performance with 430km range (WLTP) and exhilarating silent acceleration.",
     position: {
-      desktop: { top: "0%", left: "65%", dotX: "0px", dotY: "0px" },
+      desktop: { top: "5%", left: "88%", dotX: "-10px", dotY: "20px" },
       mobile: { top: "-8%", left: "60%", dotX: "0px", dotY: "0px" }
     },
   }
@@ -249,8 +249,8 @@ export function ScrollStorytelling() {
           </div>
         </div>
 
-        {/* Central Display Area */}
-        <div className="relative z-10 w-full max-w-6xl aspect-video px-8 flex items-center justify-center">
+        {/* Central Display Area - Stepped max-width for notebooks vs 1080p+ */}
+        <div className="relative z-10 w-full max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-3xl xl:max-w-5xl aspect-video px-4 md:px-8 flex items-center justify-center">
 
           {/* Navigation Arrows (Part of Selector) */}
           <div className={`selector-ui-nav absolute inset-0 hidden flex-row items-center justify-between px-4 md:px-12 z-20 pointer-events-none opacity-0 ${isSelectorVisible ? "pointer-events-auto" : ""}`}>
@@ -320,7 +320,7 @@ export function ScrollStorytelling() {
             {CORE_FEATURES.map((feature, i) => (
               <div
                 key={feature.id}
-                className="storytelling-feature absolute z-20 w-[160px] md:w-[280px] pointer-events-none transition-all duration-500"
+                className="storytelling-feature absolute z-20 w-[120px] md:w-[150px] lg:w-[190px] xl:w-[260px] pointer-events-none transition-all duration-500"
                 style={{
                   "--tm": feature.position.mobile.top,
                   "--lm": feature.position.mobile.left,
@@ -335,11 +335,11 @@ export function ScrollStorytelling() {
                 } as any}
               >
                 <div className={`flex ${feature.id === "02" ? "flex-col-reverse" : "flex-col"} gap-3 md:gap-4`}>
-                  <div className={`luxury-text-${i} space-y-1 md:space-y-2 opacity-0`}>
-                    <h4 className="text-[8px] md:text-[13px] font-black tracking-[0.3em] text-foreground uppercase">
+                  <div className={`luxury-text-${i} space-y-1 md:space-y-1.5 xl:space-y-2 opacity-0`}>
+                    <h4 className="text-[8px] md:text-[9px] lg:text-[11px] xl:text-[13px] font-black tracking-[0.3em] text-foreground uppercase">
                       {feature.title}
                     </h4>
-                    <p className="text-[9px] md:text-[15px] text-foreground/50 leading-tight md:leading-relaxed font-medium">
+                    <p className="text-[9px] md:text-[10px] lg:text-[12px] xl:text-[15px] text-foreground/50 leading-tight md:leading-snug xl:leading-relaxed font-medium">
                       {feature.desc}
                     </p>
                   </div>
@@ -390,7 +390,7 @@ export function ScrollStorytelling() {
             <span className="text-[9px] font-bold text-foreground/30 uppercase tracking-[0.4em] mb-1 block">
               Starts from
             </span>
-            <span className="text-2xl md:text-3xl font-black text-foreground uppercase tracking-tight">
+            <span className="text-xl md:text-2xl lg:text-3xl font-black text-foreground uppercase tracking-tight">
               {currentCar.price}
             </span>
           </div>
