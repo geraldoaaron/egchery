@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShieldCheck } from "lucide-react";
@@ -25,6 +25,13 @@ export function SafetyAccordionSection({
   items,
 }: SafetyAccordionSectionProps) {
   const [active, setActive] = useState(0);
+
+  // Reset active index if it goes out of bounds when items change
+  useEffect(() => {
+    if (active >= items.length) {
+      setActive(0);
+    }
+  }, [items.length, active]);
 
   if (!items || items.length === 0) return null;
 
@@ -152,8 +159,8 @@ export function SafetyAccordionSection({
                   className="absolute inset-0"
                 >
                   <Image
-                    src={items[active].image}
-                    alt={items[active].title}
+                    src={items[active]?.image || ""}
+                    alt={items[active]?.title || "Safety Feature"}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, 60vw"
@@ -168,19 +175,13 @@ export function SafetyAccordionSection({
               <div className="absolute bottom-5 left-5 z-10">
                 <motion.div
                   key={`label-${active}`}
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: 0.15 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-md"
-                  style={{ background: "rgba(255,255,255,0.85)" }}
+                  className="bg-black/80 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10"
                 >
-                  <span
-                    className="w-2 h-2 rounded-full"
-                    style={{ background: "#B8964E" }}
-                  />
-                  <span className="text-black text-xs font-semibold tracking-wide">
-                    {items[active].title}
-                  </span>
+                  <p className="text-white text-sm font-bold uppercase tracking-widest">
+                    {items[active]?.title}
+                  </p>
                 </motion.div>
               </div>
             </div>

@@ -86,7 +86,8 @@ export default async function ModelDetailPage(props: { params: Promise<{ slug: s
               </div>
 
               {/* Inline Styles for Animations */}
-              <style dangerouslySetInnerHTML={{ __html: `
+              <style dangerouslySetInnerHTML={{
+                __html: `
                 @keyframes popupRight {
                   0% { transform: translateX(40vw) scale(0.6); opacity: 0; filter: blur(10px); }
                   60% { transform: translateX(-3vw) scale(1.03); opacity: 1; filter: blur(0); }
@@ -108,35 +109,97 @@ export default async function ModelDetailPage(props: { params: Promise<{ slug: s
             </div>
 
             {/* Overlapping Glassmorphism Specs Bar */}
-            <div className="absolute bottom-18 md:bottom-12 left-1/2 -translate-x-1/2 w-[90%] md:w-[85%] bg-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-wrap md:flex-nowrap justify-around items-center gap-6 z-30">
+            <div className="absolute bottom-18 md:bottom-12 left-1/2 -translate-x-1/2 w-[95%] md:w-[90%] bg-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl p-4 md:p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-wrap md:flex-nowrap justify-around items-center gap-4 md:gap-2 z-30">
               {[
-                { label: "ACCELERATION", value: car.performance?.acceleration?.split(' ')[0] || "N/A", unit: car.performance?.acceleration?.split(' ')[1] || "Sec" },
-                { label: "TOP SPEED", value: car.performance?.topSpeed?.split(' ')[0] || "N/A", unit: car.performance?.topSpeed?.split(' ')[1] || "Km/h" },
-                { label: "WHEELBASE", value: car.dimensions?.wheelbase || "N/A", unit: car.dimensions?.wheelbaseUnit || "mm" },
-                { label: "TORQUE", value: car.performance?.torque?.split(' ')[0] || "N/A", unit: car.performance?.torque?.split(' ')[1] || "Nm" }
-              ].map((spec, i) => (
-                <div key={i} className="flex flex-col items-center text-center flex-1 px-2 relative last:before:hidden before:content-[''] before:absolute before:right-0 before:top-1/2 before:-translate-y-1/2 before:w-[1px] before:h-8 before:bg-white/20 hidden md:flex">
-                  <span className="text-[10px] font-bold text-white tracking-[0.2em] uppercase mb-2 leading-none opacity-80">{spec.label}</span>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl lg:text-5xl font-medium text-white tracking-tighter leading-none">{spec.value}</span>
-                    <span className="text-xl font-light text-white opacity-80 leading-none">{spec.unit}</span>
+                car.dimensions?.engine ? {
+                  label: car.powertrain === "BEV" ? "BATTERY" : "ENGINE",
+                  value: car.dimensions.engine.split(' ')[0],
+                  unit: car.dimensions.engine.split(' ').slice(1).join(' ')
+                } : null,
+                car.performance?.pureEvMileage ? {
+                  label: "PURE EV MILEAGE",
+                  value: car.performance.pureEvMileage.split(' ')[0],
+                  unit: car.performance.pureEvMileage.split(' ').slice(1).join(' ')
+                } : null,
+                car.performance?.comprehensiveMileage ? {
+                  label: "COMP. RANGE",
+                  value: car.performance.comprehensiveMileage.split(' ')[0],
+                  unit: car.performance.comprehensiveMileage.split(' ').slice(1).join(' ')
+                } : null,
+                car.performance?.power ? {
+                  label: "POWER",
+                  value: car.performance.power.split(' ')[0],
+                  unit: car.performance.power.split(' ').slice(1).join(' ')
+                } : null,
+                car.performance?.torque ? {
+                  label: "TORQUE",
+                  value: car.performance.torque.split(' ')[0],
+                  unit: car.performance.torque.split(' ').slice(1).join(' ')
+                } : null,
+                car.performance?.acceleration ? {
+                  label: "ACCEL",
+                  value: car.performance.acceleration.split(' ')[0],
+                  unit: car.performance.acceleration.split(' ').slice(1).join(' ')
+                } : null,
+                car.performance?.topSpeed ? {
+                  label: "TOP SPEED",
+                  value: car.performance.topSpeed.split(' ')[0],
+                  unit: car.performance.topSpeed.split(' ').slice(1).join(' ')
+                } : null,
+              ].filter(Boolean).map((spec, i) => (
+                <div key={i} className="flex flex-col items-center text-center flex-1 px-1 relative last:before:hidden md:before:content-[''] md:before:absolute md:before:right-0 md:before:top-1/2 md:before:-translate-y-1/2 md:before:w-[1px] md:before:h-8 md:before:bg-white/20 hidden md:flex">
+                  <span className="text-[9px] font-bold text-white tracking-[0.15em] uppercase mb-1.5 leading-none opacity-80 whitespace-nowrap">{spec?.label}</span>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-3xl lg:text-4xl font-medium text-white tracking-tighter leading-none">{spec?.value}</span>
+                    <span className="text-sm font-light text-white opacity-80 leading-none">{spec?.unit}</span>
                   </div>
                 </div>
               ))}
 
-              {/* Mobile View layout (2x2 grid) */}
-              <div className="grid grid-cols-2 gap-y-8 w-full md:hidden">
+              {/* Mobile View layout (Dynamic grid) */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-6 w-full md:hidden">
                 {[
-                  { label: "ACCELERATION", value: car.performance?.acceleration?.split(' ')[0] || "N/A", unit: car.performance?.acceleration?.split(' ')[1] || "Sec" },
-                  { label: "TOP SPEED", value: car.performance?.topSpeed?.split(' ')[0] || "N/A", unit: car.performance?.topSpeed?.split(' ')[1] || "Km/h" },
-                  { label: "WHEELBASE", value: car.dimensions?.wheelbase || "N/A", unit: car.dimensions?.wheelbaseUnit || "mm" },
-                  { label: "TORQUE", value: car.performance?.torque?.split(' ')[0] || "N/A", unit: car.performance?.torque?.split(' ')[1] || "Nm" }
-                ].map((spec, i) => (
-                  <div key={`mob-${i}`} className="flex flex-col items-center text-center px-2">
-                    <span className="text-[9px] font-bold text-white tracking-[0.2em] uppercase mb-1 leading-none opacity-80">{spec.label}</span>
+                  car.dimensions?.engine ? {
+                    label: car.powertrain === "BEV" ? "BATT" : "ENG",
+                    value: car.dimensions.engine.split(' ')[0],
+                    unit: car.dimensions.engine.split(' ').slice(1).join(' ')
+                  } : null,
+                  car.performance?.pureEvMileage ? {
+                    label: "EV RANGE",
+                    value: car.performance.pureEvMileage.split(' ')[0],
+                    unit: car.performance.pureEvMileage.split(' ').slice(1).join(' ')
+                  } : null,
+                  car.performance?.comprehensiveMileage ? {
+                    label: "COMP. RANGE",
+                    value: car.performance.comprehensiveMileage.split(' ')[0],
+                    unit: car.performance.comprehensiveMileage.split(' ').slice(1).join(' ')
+                  } : null,
+                  car.performance?.power ? {
+                    label: "POW",
+                    value: car.performance.power.split(' ')[0],
+                    unit: car.performance.power.split(' ').slice(1).join(' ')
+                  } : null,
+                  car.performance?.torque ? {
+                    label: "TRQ",
+                    value: car.performance.torque.split(' ')[0],
+                    unit: car.performance.torque.split(' ').slice(1).join(' ')
+                  } : null,
+                  car.performance?.acceleration ? {
+                    label: "ACC",
+                    value: car.performance.acceleration.split(' ')[0],
+                    unit: car.performance.acceleration.split(' ').slice(1).join(' ')
+                  } : null,
+                  car.performance?.topSpeed ? {
+                    label: "SPEED",
+                    value: car.performance.topSpeed.split(' ')[0],
+                    unit: car.performance.topSpeed.split(' ').slice(1).join(' ')
+                  } : null,
+                ].filter(Boolean).map((spec, i) => (
+                  <div key={`mob-${i}`} className="flex flex-col items-center text-center px-1">
+                    <span className="text-[8px] font-bold text-white tracking-[0.1em] uppercase mb-1 leading-none opacity-80">{spec?.label}</span>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-medium text-white tracking-tighter leading-none">{spec.value}</span>
-                      <span className="text-sm font-light text-white opacity-80 leading-none">{spec.unit}</span>
+                      <span className="text-xl font-medium text-white tracking-tighter leading-none">{spec?.value}</span>
+                      <span className="text-[10px] font-light text-white opacity-80 leading-none">{spec?.unit}</span>
                     </div>
                   </div>
                 ))}

@@ -172,14 +172,6 @@ export function ColorOptionsSection({ carName, colors: initialColors, colorGroup
                 <SteeringWheelIcon />
                 Test Drive
               </Link>
-              
-              <Link
-                href={`/hubungi-kami?model=${groupsToUse ? groupsToUse[activeTabIdx].name : carName}&color=${active.name}`}
-                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-black text-white text-sm font-semibold tracking-wider transition-all hover:scale-105 hover:shadow-lg"
-              >
-                <Check className="w-5 h-5" />
-                Select Product
-              </Link>
             </div>
           </div>
 
